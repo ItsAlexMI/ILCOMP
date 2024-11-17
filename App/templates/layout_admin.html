@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel Sidebar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="">
+
+    <!-- Contenedor principal -->
+    <div class="flex h-screen">
+        
+        <!-- Barra lateral -->
+        <aside id="sidebar" class="flex h-screen flex-col justify-between border-e bg-white w-64 md:block hidden">
+            <div class="px-4 py-6">
+                
+                <!-- Logo -->
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtGLjD1G10BJPq-dqKzGP_ARom2W5k4iRIGQ&s" alt="Logo" class="h-16 w-auto rounded-full"/>
+        
+              
+                <!-- Menú de navegación -->
+                <ul class="mt-6 space-y-1">
+                    <!-- Gestión de Usuarios -->
+                    <li>
+                        
+                                <a class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">Gestión de Usuarios</a>
+
+                    </li>
+
+                    <!-- Gestión de Alumnos -->
+                    <li>
+                        
+                        <a class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">Gestión de Alumnos</a>
+
+            </li>
+
+                    <!-- Gestión de Docentes -->
+                    <li>
+                        
+                        <a class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">Gestión de Docentes</a>
+
+            </li>
+
+                    <!-- Gestión de Cursos y Planes de Estudio -->
+                    <li>
+                        
+                        <a class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">Gestión de Cursos y Planes de Estudio</a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Botón de Cerrar Sesión -->
+            <div class="p-4 border-t border-gray-200">
+                <a href="#" class="flex items-center gap-2 block mt-5 rounded-lg px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 w-max ml-auto mr-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
+                    </svg>
+                    Cerrar sesión
+                </a>            </div>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="flex-1 p-6">
+            {% block content %} {% endblock %}
+        </main>
+
+    </div>
+</body>
+</html>

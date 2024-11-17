@@ -1,0 +1,64 @@
+{% extends 'layout_admin.html' %}
+
+{% block title %}Gestión de Notas{% endblock %}
+
+{% block content %}
+<h2 class="text-3xl font-bold text-gray-800 mb-6">Gestión de Notas</h2>
+
+<!-- Selección del Curso -->
+<div class="mb-6">
+    <label for="selectCourse" class="block text-lg font-medium text-gray-700">Seleccionar Curso:</label>
+    <select id="selectCourse" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+        <option value="1">Matemáticas Avanzadas</option>
+        <option value="2">Ingeniería en Sistemas</option>
+        <option value="3">Programación Avanzada</option>
+    </select>
+</div>
+
+<!-- Tabla de Notas -->
+<div class="overflow-x-auto mb-6">
+    <table class="w-full text-sm text-left text-gray-500">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+                <th scope="col" class="px-6 py-3">ID Alumno</th>
+                <th scope="col" class="px-6 py-3">Nombre</th>
+                <th scope="col" class="px-6 py-3">Nota Parcial 1</th>
+                <th scope="col" class="px-6 py-3">Nota Parcial 2</th>
+                <th scope="col" class="px-6 py-3">Nota Parcial 3</th>
+                <th scope="col" class="px-6 py-3">Promedio</th>
+                <th scope="col" class="px-6 py-3">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="bg-white border-b hover:bg-gray-50">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">2023001</th>
+                <td class="px-6 py-4">Juan Rodríguez</td>
+                <td class="px-6 py-4"><input type="number" class="w-full p-1 border border-gray-300 rounded text-center" placeholder="0"></td>
+                <td class="px-6 py-4"><input type="number" class="w-full p-1 border border-gray-300 rounded text-center" placeholder="0"></td>
+                <td class="px-6 py-4"><input type="number" class="w-full p-1 border border-gray-300 rounded text-center" placeholder="0"></td>
+                <td class="px-6 py-4 font-semibold text-blue-600">0.00</td>
+                <td class="px-6 py-4">
+                    <a href="#" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300 font-semibold">Actualizar</a>
+                    <a href="#" class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors duration-300 font-semibold">Editar</a>
+                    <a href="#" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</a>
+                </td>
+            </tr>
+            <tr class="bg-white border-b hover:bg-gray-50">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">2023002</th>
+                <td class="px-6 py-4">Maria García</td>
+                <td class="px-6 py-4"><input type="number" class="w-full p-1 border border-gray-300 rounded text-center" placeholder="0"></td>
+                <td class="px-6 py-4"><input type="number" class="w-full p-1 border border-gray-300 rounded text-center" placeholder="0"></td>
+                <td class="px-6 py-4"><input type="number" class="w-full p-1 border border-gray-300 rounded text-center" placeholder="0"></td>
+                <td class="px-6 py-4 font-semibold text-blue-600">0.00</td>
+                <td class="px-6 py-4">
+                    <a href="#" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300 font-semibold">Actualizar</a>
+                    <a href="#" class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors duration-300 font-semibold">Editar</a>
+                    <a href="#" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</a>
+                </td>
+            </tr>
+            <!-- Repite las filas según los datos en la base de datos -->
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

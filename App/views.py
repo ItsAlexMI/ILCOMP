@@ -23,3 +23,21 @@ def acta_culminacion(request):
 
 def plan_estudios(request):
     return render(request, 'plan_estudios.html')
+
+def certificado_notas(request):
+    return render(request, 'certificado_notas.html')
+
+def gestion_usuario(request):
+    return render(request, 'gestion_usuario.html')
+
+def gestion_alumno(request):
+    return render(request, 'gestion_alumno.html')
+
+def gestion_docente(request):
+    return render(request, 'gestion_docente.html')
+
+def gestion_CP(request):
+    return render(request, 'gestion_CP.html')
+
+def gestion_notas(request):
+    return render(request, 'gestion_notas.html')

@@ -1,0 +1,111 @@
+{% extends 'layout_admin.html' %}
+
+{% block title %}Gestión de Cursos y Planes de Estudio{% endblock %}
+
+{% block content %}
+    <h2 class="text-3xl font-bold text-gray-800 mb-6">Gestión de Cursos y Planes de Estudio</h2>
+
+    <!-- Botones para alternar tablas -->
+    <div class="flex gap-4 mb-6">
+        <button onclick="showTable('cursoTable')" class="mb-2 mt-10 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300 font-semibold">Cursos</button>
+        <button onclick="showTable('planEstudioTable')" class="mb-2 mt-10 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300 font-semibold">Planes de Estudio</button>
+        <button onclick="showTable('planEncabezadoTable')" class="mb-2 mt-10 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300 font-semibold">Plan Encabezado</button>
+    </div>
+
+    <!-- Tabla de Curso -->
+    <div id="cursoTable" class="overflow-x-auto mb-6 hidden">
+        <table class="w-full text-sm text-left text-gray-500">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3">ID</th>
+                    <th scope="col" class="px-6 py-3">Nombre del Curso</th>
+                    <th scope="col" class="px-6 py-3">Plan de Estudio</th>
+                    <th scope="col" class="px-6 py-3">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="bg-white border-b hover:bg-gray-50">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">1</th>
+                    <td class="px-6 py-4">Matemáticas Avanzadas</td>
+                    <td class="px-6 py-4">Ingeniería en Sistemas</td>
+                    <td class="px-6 py-4 flex space-x-2">
+                        <a href="#" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300 font-semibold">Asignar Docente</a>
+                        <a href="#" class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors duration-300 font-semibold">Editar</a>
+                        <a href="#" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</a>
+                        
+                    </td>
+                </tr>
+                <!-- Repite las filas según los datos en la base de datos -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Tabla de Plan_Estudio -->
+    <div id="planEstudioTable" class="overflow-x-auto mb-6 hidden">
+        <table class="w-full text-sm text-left text-gray-500">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3">ID</th>
+                    <th scope="col" class="px-6 py-3">Nombre del Plan de Estudio</th>
+                    <th scope="col" class="px-6 py-3">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="bg-white border-b hover:bg-gray-50">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">1</th>
+                    <td class="px-6 py-4">Ingeniería en Sistemas</td>
+                    <td class="px-6 py-4">
+                        <a href="#" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300 font-semibold">Agregar plan de estudio</a>
+                        <a href="#" class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors duration-300 font-semibold">Editar</a>
+                        <a href="#" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</a>
+                    </td>
+                </tr>
+                <!-- Repite las filas según los datos en la base de datos -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Tabla de Plan_Encabezado -->
+    <div id="planEncabezadoTable" class="overflow-x-auto mb-6 hidden">
+        <table class="w-full text-sm text-left text-gray-500">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3">ID</th>
+                    <th scope="col" class="px-6 py-3">Encabezado del Plan</th>
+                    <th scope="col" class="px-6 py-3">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="bg-white border-b hover:bg-gray-50">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">1</th>
+                    <td class="px-6 py-4">Plan Básico</td>
+                    <td class="px-6 py-4">
+                        <a href="#" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300 font-semibold">Agregar encabezado del plan</a>
+                        <a href="#" class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors duration-300 font-semibold">Editar</a>
+                        <a href="#" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</a>
+                    </td>
+                </tr>
+                <!-- Repite las filas según los datos en la base de datos -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- JavaScript para alternar tablas -->
+    <script>
+        function showTable(tableId) {
+            // Oculta todas las tablas
+            document.getElementById('cursoTable').classList.add('hidden');
+            document.getElementById('planEstudioTable').classList.add('hidden');
+            document.getElementById('planEncabezadoTable').classList.add('hidden');
+            
+            // Muestra la tabla seleccionada
+            document.getElementById(tableId).classList.remove('hidden');
+        }
+
+        // Muestra la tabla de Cursos por defecto al cargar la página
+        document.addEventListener("DOMContentLoaded", function() {
+            showTable('cursoTable');
+        });
+    </script>
+
+{% endblock %}
