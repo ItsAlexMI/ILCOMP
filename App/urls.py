@@ -1,5 +1,9 @@
 from django.urls import path
+from django.contrib.auth import views as auth_views
+
 from . import views
+
+app_name = "app"
 
 urlpatterns = [
     path('', views.home, name='home'), 
@@ -9,10 +13,17 @@ urlpatterns = [
     path('acta_culminacion', views.acta_culminacion, name='Acta_culminacion'),
     path('plan_estudios', views.plan_estudios, name='Plan_estudios'),
     path('certificado_notas', views.certificado_notas, name='Certificado_notas'),
-    path('login', views.login, name='login'),
+    # path('login', views.login, name='login'),
     path('gestion_usuario', views.gestion_usuario, name='gestion_usuario'),
     path('gestion_alumno', views.gestion_alumno, name='gestion_alumno'),
-    path('gestion_docente', views.gestion_docente, name='gestion_docente'),
+    path('gestion_docente/', views.gestion_docente, name='gestion_docente'),
     path('gestion_CP', views.gestion_CP, name='gestion_CP'),
     path('gestion_notas', views.gestion_notas, name='gestion_notas'),
+    path('login/',auth_views.LoginView.as_view(template_name='login.html'),
+        name='login'),
+    path('logout/',
+         auth_views.LogoutView.as_view(template_name='login.html'),
+         name='logout'),
+
+
 ]

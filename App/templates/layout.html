@@ -63,7 +63,7 @@
 
                         <ul class="mt-2 space-y-1 px-4">
                             <li>
-                                <a href="titulo_otorgado" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                <a href="{% url 'app:Titulo_otorgado' %}" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
                                     Titulo otorgado
 
                                 </a>
@@ -114,12 +114,21 @@
             </a>
         
             <!-- Botón de cerrar sesión -->
-            <a href="#" class="flex items-center gap-2 block mt-5 rounded-lg px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 w-max ml-auto mr-auto">
+            <!-- <a href="#" class="flex items-center gap-2 block mt-5 rounded-lg px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 w-max ml-auto mr-auto">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
                     <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
                 </svg>
                 Cerrar sesión
-            </a>
+            </a> -->
+            <form method="post" action="{% url 'app:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="flex items-center gap-2 block mt-5 rounded-lg px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 w-max ml-auto mr-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
+                    </svg> Cerrar sesión
+                </button>
+              </form>
+  
         </div>
         
     </div>
@@ -130,5 +139,7 @@
         {% endblock %}
     </div>
 
+    {% block js%}
+    {% endblock js%}
 </body>
 </html>

@@ -101,16 +101,18 @@
           </p>
   
           <div class="mt-10">
-            <form class="form">
+            <form class="form" method="post">
+              {% csrf_token %}
               <label class="flex items-center mb-6 border rounded-lg px-4 py-2 bg-white shadow-md">
                 <i class="bx bx-envelope"></i>
                 <input
                   class="w-full p-2 bg-white rounded-lg outline-none text-gray-700"
-                  type="email"
-                  placeholder="Correo electrónico"
-                  name="email-login"
+                  type="text"
+                  placeholder="Usuario"
+                  name="username"
                   required
                 />
+                <!-- name="email-login" -->
               </label>
   
               <label class="flex items-center mb-6 rounded-lg border px-4 py-2 bg-white shadow-md">
@@ -119,9 +121,10 @@
                   class="w-full p-2 bg-white rounded-lg  outline-none text-gray-700"
                   type="password"
                   placeholder="Contraseña"
-                  name="password-login"
+                  name="password"
                   required
                 />
+                <!-- name="password-login" -->
               </label>
   
               <div class="flex justify-center">
