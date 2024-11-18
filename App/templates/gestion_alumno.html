@@ -26,17 +26,19 @@
             <tbody>
                  {% comment %} Ejemplos de alumnos {% endcomment %}
                  <tr class="bg-white border-b hover:bg-gray-50">
-                    <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ Alumnos.id }}</td>
-                    <td class="px-6 py-4">{{ Alumnos.nombre }}</td>
-                    <td class="px-6 py-4">{{ Alumnos.username }}</td>
+                    <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ alumnos.carnet }}</td>
+                    <td class="px-6 py-4">{{ alumnos.nombre }}</td>
+                    <td class="px-6 py-4">{{ alumnos.username }}</td>
+                    <td class="px-6 py-4">{{ alumnos.plan_estudio }}</td>
+                    <td class="px-6 py-4">{{ alumnos.ano_ingreso }}</td>
                     <td class="px-6 py-4">
                         <!-- <a href="#" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold">Editar</a> -->
                         <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold"
-                        onclick="editar('{{Alumnos.id}}')"
+                        onclick="editar('{{alumnos.carnet}}')"
                         >Editar</button>
                         <!-- <a href="#" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</a> -->
                         <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold"
-                        onclick="eliminar('{{Alumnos.id}}')">Eliminar</button>
+                        onclick="eliminar('{{alumnos.carnet}}')">Eliminar</button>
                     </td>
                 </tr>
               <!--  <tr class="bg-white border-b hover:bg-gray-50">
@@ -295,8 +297,8 @@
 
     <script>
 
-function editar(id){
-            let url = `/administrar_alumnos/${id}`
+function editar(carnet){
+            let url = `/administrar_alumnos/${carnet}`
             $.ajax({
                 // headers : {"X-CSRFToken": token},
                 type:"GET",
@@ -304,7 +306,7 @@ function editar(id){
                 // data:data,
                 success: function(r){
                     console.log(r)
-                    $("#alumnosForm").attr('action', url);
+                    $("#alumnoForm").attr('action', url);
                     $("#nombre").val(r["nombre"])
                     $("#username").val(r["username"])
                     $("#username").attr('readonly', true);
@@ -319,13 +321,13 @@ function editar(id){
 
         }
 
-        function eliminar(id){
-            let borrar = confirm(`Borrar Alumnos con Id ${id}`)
+        function eliminar(carnet){
+            let borrar = confirm(`Borrar Alumnos con Carnet ${carnet}`)
 
             if(!borrar){
                 return;
             }
-            let url = `/administrar_alumnos/${id}`
+            let url = `/administrar_alumnos/${carnet}`
             $.ajax({
                 headers : {"X-CSRFToken": '{{csrf_token}}'},
                 type:"DELETE",

@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponseRedirect
-from django.db import connection
+from django.db import connection, transaction
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib import messages
 from .models import *
+import logging
 
+
+logger = logging.getLogger(__name__)
 # Create your views here.
 # @login_required()
 def home(request):
@@ -74,7 +77,68 @@ def gestion_usuario(request):
     return render(request, 'gestion_usuario.html')
 
 def gestion_alumno(request):
-    return render(request, 'gestion_alumno.html')
+    context = {}
+    logger.info("Iniciando gestión de alumnos")
+    objs = Alumnos.objects.raw("SELECT * FROM alumnos ORDER BY carnet")
+    context["alumnos"] = objs
+    logger.info("Finalizando gestión de alumnos")
+    return render(request, 'gestion_alumno.html', context)
+
+def administrar_alumnos(request, carnet=None):
+    """
+    Función para administrar un alumno específico basado en su carnet.
+    Maneja solicitudes POST, GET y DELETE.
+    """
+    if request.method == "POST":
+        datos = request.POST
+        nombre = datos.get("nombre")
+        username = datos.get("username")
+        curso = datos.get("curso")
+        ano_ingreso = datos.get("ano_ingreso")
+        logger.info(f"Nombre: {nombre}, Username: {username}, Curso: {curso}, Año de Ingreso: {ano_ingreso}")
+
+        try:
+            with transaction.atomic():
+                if not carnet:  # Crear un nuevo alumno
+                    with connection.cursor() as cursor:
+                        cursor.execute("SELECT * FROM usuario WHERE username=%s", [username])
+                        row = cursor.fetchone()
+                        if not row:
+                            cursor.execute("INSERT INTO usuario(username, nombre, tipo) VALUES (%s, %s, 0)", [username, nombre])
+                        cursor.execute("INSERT INTO alumnos(nombre, username, curso, ano_ingreso) VALUES (%s, %s, %s, %s)", [nombre, username, curso, ano_ingreso])
+                else:  # Actualizar alumno existente
+                    with connection.cursor() as cursor:
+                        cursor.execute("UPDATE alumnos SET nombre=%s, username=%s, curso=%s, ano_ingreso=%s WHERE carnet=%s", [nombre, username, curso, ano_ingreso, carnet])
+        except Exception as e:
+            logger.error(f"Error en la creación/actualización de alumno: {e}")
+            return JsonResponse({"error": str(e)}, status=500)
+
+    if request.method == "GET":
+        objs = Alumnos.objects.filter(carnet=carnet)
+        if objs.exists():
+            o = objs[0]
+            r = {
+                "nombre": o.nombre,
+                "username": o.username,
+                "curso": o.curso,
+                "ano_ingreso": o.ano_ingreso,
+                "carnet": o.carnet
+            }
+            return JsonResponse(r)
+        else:
+            return JsonResponse({"error": "Alumno no encontrado"}, status=404)
+
+    if request.method == "DELETE":
+        if carnet:
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute("DELETE FROM alumnos WHERE carnet=%s", [carnet])
+                return JsonResponse({"success": "Alumno eliminado"})
+            except Exception as e:
+                logger.error(f"Error al eliminar alumno: {e}")
+                return JsonResponse({"error": "Error al eliminar alumno"}, status=500)
+
+    return redirect("app:gestion_alumnos")
 
 def gestion_docente(request):
     # with connection.cursor() as cursor:
