@@ -13,6 +13,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import dj_database_url
 import os
+from django.contrib.messages import constants as messages
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
@@ -43,9 +47,11 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -124,6 +130,10 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-LOGIN_URL='/login'
-LOGIN_REDIRECT_URL='/'
+
+LOGIN_REDIRECT_URL = '/'  # Redirige a la página principal después de iniciar sesión
+LOGIN_URL = '/login/'  # Redirige al login si el usuario no está autenticado
+
+
+# Redirigir después de hacer logout
 LOGOUT_REDIRECT_URL = '/login/'

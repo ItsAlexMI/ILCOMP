@@ -1,20 +1,57 @@
-from django.shortcuts import render,redirect
-from django.http import HttpResponseRedirect, JsonResponse
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpResponseRedirect
 from django.db import connection
-
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login as auth_login, logout
+from django.contrib import messages
 from .models import *
 
 # Create your views here.
-@login_required()
+# @login_required()
 def home(request):
     return render(request, 'home.html')
 
+def logout_view(request):
+    logout(request)  # Cerrar sesión correctamente
+    return HttpResponseRedirect("/login")
+
 
 def login(request):
-    return render(request, 'login.html')
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        if username and password:
+            with connection.cursor() as cursor:
+                # Realizamos la consulta para obtener el usuario
+                cursor.execute("SELECT username, password, tipo FROM Usuario WHERE username = %s", [username])
+                user = cursor.fetchone()
+
+                if user:
+                    # Comprobamos que la contraseña coincida
+                    if user[1] == password:
+                        tipo = user[2]
+
+                        # Guardamos la información del usuario en la sesión
+                        request.session['username'] = user[0]
+                        request.session['tipo'] = tipo
+
+                        # Verificamos el tipo de usuario y redirigimos
+                        if tipo == 1:  # Administrador
+                            return redirect("app:gestion_docente")
+                        else:
+                            # Obtener la URL 'next' si existe, sino redirigir a la raíz
+                            next_url = request.GET.get('next', '/')
+                            return redirect(next_url)
+                    else:
+                        messages.error(request, "Usuario o contraseña incorrectos.")
+                else:
+                    messages.error(request, "Usuario no encontrado.")
+        else:
+            messages.error(request, "Por favor, complete todos los campos.")
     
+    return render(request, 'login.html')
+
 def titulo_otorgado(request):
     return render(request, 'titulo_otorgado.html')
 
