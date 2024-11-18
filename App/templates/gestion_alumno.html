@@ -24,32 +24,22 @@
                 </tr>
             </thead>
             <tbody>
-                {% comment %} Ejemplos de alumnos {% endcomment %}
-                <tr class="bg-white border-b hover:bg-gray-50">
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                        2023001
-                    </th>
+                 {% comment %} Ejemplos de alumnos {% endcomment %}
+                 <tr class="bg-white border-b hover:bg-gray-50">
+                    <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ Alumnos.id }}</td>
+                    <td class="px-6 py-4">{{ Alumnos.nombre }}</td>
+                    <td class="px-6 py-4">{{ Alumnos.username }}</td>
                     <td class="px-6 py-4">
-                        Juan Rodríguez
-                    </td>
-                    {% comment %} username {% endcomment %}
-
-                    <td class="px-6 py-4">
-                        Juan123
-                    </td>
-
-                    <td class="px-6 py-4">
-                        Ingeniería en Sistemas
-                    </td>
-                    <td class="px-6 py-4">
-                        2022
-                    </td>
-                    <td class="px-6 py-4">
-                        <a href="#" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold">Editar</a>
-                        <a href="#" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</a>
+                        <!-- <a href="#" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold">Editar</a> -->
+                        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold"
+                        onclick="editar('{{Alumnos.id}}')"
+                        >Editar</button>
+                        <!-- <a href="#" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</a> -->
+                        <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold"
+                        onclick="eliminar('{{Alumnos.id}}')">Eliminar</button>
                     </td>
                 </tr>
-                <tr class="bg-white border-b hover:bg-gray-50">
+              <!--  <tr class="bg-white border-b hover:bg-gray-50">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                         2023002
                     </th>
@@ -71,8 +61,8 @@
                     <td class="px-6 py-4">
                         <a href="#" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold">Editar</a>
                         <a href="#" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</a>
-                    </td>    
-                </tr>
+                    </td>
+                </tr>-->
             </tbody>
         </table>
     </div>
@@ -133,7 +123,7 @@
                 <div id="progressBarContainer" class="relative w-full h-2 bg-gray-300 rounded-full">
                     <div id="progressBar" class="absolute h-2 bg-purple-500 rounded-full"></div>
                 </div>
-                
+
                 <!-- Círculos de Pasos -->
                 <div class="absolute flex justify-between w-full -top-4 px-2">
                     <div class="step-circle" data-step="1">1</div>
@@ -214,7 +204,7 @@
             transition: all 0.3s ease;
             z-index: 10;
         }
-    
+
         .step-circle.active {
             background-color: #8b5cf6; /* Púrpura */
             border-color: #8b5cf6;
@@ -222,13 +212,13 @@
             width: 35px;
             height: 35px;
         }
-    
+
         .step-circle.completed {
             background-color: #7c3aed; /* Púrpura más oscuro */
             border-color: #7c3aed;
             color: white;
         }
-    
+
         #progressBarContainer {
             position: relative;
             height: 2px;
@@ -237,7 +227,7 @@
             overflow: hidden;
             z-index: 5;
         }
-    
+
         #progressBar {
             height: 100%;
             background-color: #8b5cf6; /* Púrpura */
@@ -300,6 +290,56 @@
             document.getElementById('modal').classList.add('hidden');
             currentStep = 1;
             showStep(currentStep);
+        }
+    </script>
+
+    <script>
+
+function editar(id){
+            let url = `/administrar_alumnos/${id}`
+            $.ajax({
+                // headers : {"X-CSRFToken": token},
+                type:"GET",
+                url:url,
+                // data:data,
+                success: function(r){
+                    console.log(r)
+                    $("#alumnosForm").attr('action', url);
+                    $("#nombre").val(r["nombre"])
+                    $("#username").val(r["username"])
+                    $("#username").attr('readonly', true);
+                    openModal()
+
+                },
+                error: function(jqXHR, textStatus, errorThrow){
+                    console.log(textStatus, errorThrow);
+                    alert("Error al enviar el formulario: " + errorThrow)
+                }
+            })
+
+        }
+
+        function eliminar(id){
+            let borrar = confirm(`Borrar Alumnos con Id ${id}`)
+
+            if(!borrar){
+                return;
+            }
+            let url = `/administrar_alumnos/${id}`
+            $.ajax({
+                headers : {"X-CSRFToken": '{{csrf_token}}'},
+                type:"DELETE",
+                url:url,
+                // data:data,
+                success: function(r){
+                    location.reload()
+                },
+                error: function(jqXHR, textStatus, errorThrow){
+                    console.log(textStatus, errorThrow);
+                    alert("Error al enviar el formulario: " + errorThrow)
+                }
+            })
+
         }
     </script>
 {% endblock %}
