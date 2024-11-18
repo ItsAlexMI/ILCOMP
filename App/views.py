@@ -1,6 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.db import connection
 
+
+from .models import *
 
 # Create your views here.
 @login_required()
@@ -36,7 +40,59 @@ def gestion_alumno(request):
     return render(request, 'gestion_alumno.html')
 
 def gestion_docente(request):
-    return render(request, 'gestion_docente.html')
+    # with connection.cursor() as cursor:
+    #     # cursor.execute("UPDATE bar SET foo = 1 WHERE baz = %s", [self.baz])
+    #     cursor.execute("SELECT * FROM docente")
+    #     row = cursor.fetchone()
+    context = {}
+    print("Iniciando")
+    objs = docente.objects.raw("SELECT * FROM docente order by id")
+    # for obj in objs:
+    #     print(obj)
+
+    context["docentes"] = objs
+    print("Finalizando")
+    return render(request, 'gestion_docente.html',context)
+
+
+def administrar_docente(request,id=None):
+
+    if request.method == "POST":
+        datos = request.POST
+        # print(datos)
+        nombre = datos.get("nombre")
+        username = datos.get("username")
+        password = datos.get("password")
+        print(nombre,username,password)
+        if not id:
+            # print("Vamos a Insertar")
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT * FROM usuario where username=%s",[username])
+                row = cursor.fetchone()
+                print(row)
+                if not row:
+                    cursor.execute("insert into usuario(username,nombre,password,tipo) values (%s,%s,%s,0)", [username,nombre,password])
+
+                cursor.execute("insert into docente(nombre,username) values(%s,%s)", [nombre,username])
+        else:
+            with connection.cursor() as cursor:
+                cursor.execute("update docente set nombre=%s,username=%s where id=%s",[nombre,username,id])
+
+    if request.method == "GET":
+        objs = docente.objects.raw("SELECT * FROM docente where id=%s",[id])
+        # print(objs)
+        for o in objs:
+        #     print(o.id,o.nombre,o.username)
+            r = {"nombre":o.nombre,"id":o.id,"username":o.username}
+        return JsonResponse(r)
+
+    if request.method == "DELETE":
+        if id:
+             with connection.cursor() as cursor:
+                cursor.execute("delete from docente where id=%s",[id])
+
+    return redirect("app:gestion_docente")
+
 
 def gestion_CP(request):
     return render(request, 'gestion_CP.html')

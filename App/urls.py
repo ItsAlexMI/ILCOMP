@@ -17,6 +17,9 @@ urlpatterns = [
     path('gestion_usuario', views.gestion_usuario, name='gestion_usuario'),
     path('gestion_alumno', views.gestion_alumno, name='gestion_alumno'),
     path('gestion_docente/', views.gestion_docente, name='gestion_docente'),
+    path('administrar_docente/', views.administrar_docente, name='insertar_docente'),
+    path('administrar_docente/<int:id>', views.administrar_docente, name='actualizar_docente'),
+
     path('gestion_CP', views.gestion_CP, name='gestion_CP'),
     path('gestion_notas', views.gestion_notas, name='gestion_notas'),
     path('login/',auth_views.LoginView.as_view(template_name='login.html'),

@@ -4,8 +4,13 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 class docente(models.Model):
+    id = models.IntegerField(primary_key=True)
     nombre = models.CharField(max_length=200)
     username = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.nombre
+    
+    class Meta:
+        db_table = "docente"
+        managed=False
