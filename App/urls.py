@@ -5,7 +5,7 @@ app_name = "app"
 
 urlpatterns = [
     # Rutas para la página principal y login
-    path('', views.home, name='home'), 
+    path('', views.home, name='home'),
     path('login/', views.login, name='login'),
     path('logout/', views.logout_view, name='logout'),
 
@@ -20,6 +20,10 @@ urlpatterns = [
     # Gestión general
     path('gestion_usuario/', views.gestion_usuario, name='gestion_usuario'),
     path('gestion_alumno/', views.gestion_alumno, name='gestion_alumno'),
+    path('administrar_alumnos/<int:carnet>/', views.administrar_alumnos, name='administrar_alumnos'),
+    path('_crear_actualizar_alumno/', views._crear_actualizar_alumno, name='_crear_actualizar_alumno'),
+    path('_obtener_alumno/', views._obtener_alumno, name='_obtener_alumno'),
+    path('_eliminar_alumno/', views._eliminar_alumno, name='_eliminar_alumno'),
     path('gestion_docente/', views.gestion_docente, name='gestion_docente'),
     path('administrar_docente/', views.administrar_docente, name='insertar_docente'),
     path('administrar_docente/<int:id>/', views.administrar_docente, name='actualizar_docente'),
@@ -28,5 +32,5 @@ urlpatterns = [
 
     # Operaciones de PDFs
     path('subir_pdf/', views.subir_pdf, name='subir_pdf'),
-path('eliminar_pdf/<int:carnet>/<str:tipo_documento>/', views.eliminar_pdf, name='eliminar_pdf')
+    path('eliminar_pdf/<int:carnet>/<str:tipo_documento>/', views.eliminar_pdf, name='eliminar_pdf'),
 ]

@@ -6,7 +6,7 @@
     <h1 class="text-3xl font-bold text-gray-800 mb-6">Gestión de Alumnos</h1>
 
     <!-- Botón de Agregar Alumno -->
-    <button onclick="openModal()" class="mb-2 mt-10 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300 font-semibold">
+    <button onclick="openModal(); console.log('Botón presionado');" class="mb-2 mt-10 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300 font-semibold">
         Agregar Alumno
     </button>
 
@@ -14,31 +14,41 @@
     <div class="w-full overflow-x-auto">
         <table class="w-full text-sm text-left text-gray-500">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3">Carnet</th>
-                    <th scope="col" class="px-6 py-3">Nombre</th>
-                    <th scope="col" class="px-6 py-3">Username</th>
-                    <th scope="col" class="px-6 py-3">Plan de Estudios</th>
-                    <th scope="col" class="px-6 py-3">Año de Ingreso</th>
-                    <th scope="col" class="px-6 py-3">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                 {% comment %} Ejemplos de alumnos {% endcomment %}
-                 <tr class="bg-white border-b hover:bg-gray-50">
-                    <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ Alumnos.id }}</td>
-                    <td class="px-6 py-4">{{ Alumnos.nombre }}</td>
-                    <td class="px-6 py-4">{{ Alumnos.username }}</td>
-                    <td class="px-6 py-4">
-                        <!-- <a href="#" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold">Editar</a> -->
-                        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold"
-                        onclick="editar('{{Alumnos.id}}')"
-                        >Editar</button>
-                        <!-- <a href="#" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</a> -->
-                        <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold"
-                        onclick="eliminar('{{Alumnos.id}}')">Eliminar</button>
-                    </td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th scope="col" class="px-6 py-3">Carnet</th>
+                        <th scope="col" class="px-6 py-3">Nombre</th>
+                        <th scope="col" class="px-6 py-3">Username</th>
+                        <th scope="col" class="px-6 py-3">Plan de Estudios</th>
+                        <th scope="col" class="px-6 py-3">Año de Ingreso</th>
+                        <th scope="col" class="px-6 py-3">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Bucle para mostrar cada alumno -->
+                    {% for alumno in alumnos %}
+                    <tr class="bg-white border-b hover:bg-gray-50">
+                        <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ alumno.carnet }}</td>
+                        <td class="px-6 py-4">{{ alumno.nombre }}</td>
+                        <td class="px-6 py-4">{{ alumno.username }}</td>
+                        <td class="px-6 py-4">{{ alumno.plan_estudio }}</td>
+                        <td class="px-6 py-4">{{ alumno.ano_ingreso }}</td>
+                        <td class="px-6 py-4">
+                            <!-- Botón para editar -->
+                            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold"
+                                onclick="editar('{{ alumno.carnet }}')">
+                                Editar
+                            </button>
+                            <!-- Botón para eliminar -->
+                            <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold"
+                                onclick="eliminar('{{ alumno.carnet }}')">
+                                Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                
               <!--  <tr class="bg-white border-b hover:bg-gray-50">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                         2023002
@@ -133,15 +143,16 @@
             </div>
 
             <!-- Formulario -->
-            <form id="alumnoForm" class="relative mt-8">
+            <form id="alumnoForm" class="relative mt-8" method="post" action="{% url 'app:_crear_actualizar_alumno' %}">
+                {% csrf_token %}
                 <!-- Paso 1: Información Personal -->
                 <div id="step1" class="step transition-opacity duration-500">
                     <h2 class="text-2xl font-semibold text-gray-800 mb-4">Información Personal</h2>
                     <label class="block text-gray-700 text-sm font-semibold mb-2">Carnet</label>
-                    <input type="text" id="carnet" class="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                    <input type="text" id="carnet" name="carnet" class="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
 
                     <label class="block text-gray-700 text-sm font-semibold mb-2">Nombre</label>
-                    <input type="text" id="nombre" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                    <input type="text" id="nombre" name="nombre" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
 
                     <button type="button" onclick="nextStep()" class="w-full mt-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300">Siguiente</button>
                 </div>
@@ -150,13 +161,13 @@
                 <div id="step2" class="step hidden opacity-0 transition-opacity duration-500">
                     <h2 class="text-2xl font-semibold text-gray-800 mb-4">Información Académica</h2>
                     <label class="block text-gray-700 text-sm font-semibold mb-2">Año de Ingreso</label>
-                    <input type="number" id="anio_ingreso" class="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                    <input type="number" id="anio_ingreso" name="anio_ingreso" class="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
 
                     <label class="block text-gray-700 text-sm font-semibold mb-2">Plan de Estudios</label>
                     <select id="plan_estudio" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
-                        <option value="plan1">Plan 1</option>
-                        <option value="plan2">Plan 2</option>
-                        <option value="plan3">Plan 3</option>
+                        <option value="plan1">Plan 2010</option>
+                        <option value="plan2">Plan 2020</option>
+                        <option value="plan3">Plan 2024</option>
                     </select>
 
                     <div class="flex justify-between mt-6">
@@ -169,10 +180,10 @@
                 <div id="step3" class="step hidden opacity-0 transition-opacity duration-500">
                     <h2 class="text-2xl font-semibold text-gray-800 mb-4">Credenciales de Usuario</h2>
                     <label class="block text-gray-700 text-sm font-semibold mb-2">Username</label>
-                    <input type="text" id="username" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                    <input type="text" id="username" name="username" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
 
                     <label class="block text-gray-700 text-sm font-semibold mb-2">Password</label>
-                    <input type="password" id="password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                    <input type="password" id="password" name="password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
 
                     <div class="flex justify-between mt-6">
                         <button type="button" onclick="prevStep()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300">Anterior</button>
@@ -293,53 +304,62 @@
         }
     </script>
 
-    <script>
+<script>
+    // Función para editar un alumno
+    function editar(carnet) {
+        let url = `/administrar_alumnos/${carnet}`;
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function (response) {
+                console.log(response);
 
-function editar(id){
-            let url = `/administrar_alumnos/${id}`
-            $.ajax({
-                // headers : {"X-CSRFToken": token},
-                type:"GET",
-                url:url,
-                // data:data,
-                success: function(r){
-                    console.log(r)
-                    $("#alumnosForm").attr('action', url);
-                    $("#nombre").val(r["nombre"])
-                    $("#username").val(r["username"])
-                    $("#username").attr('readonly', true);
-                    openModal()
+                // Asignar los valores al formulario de edición
+                $("#alumnoForm").attr('action', url); // Establecer la acción del formulario
+                $("#nombre").val(response["nombre"]); // Rellenar el campo 'nombre'
+                $("#username").val(response["username"]); // Rellenar el campo 'username'
+                $("#username").attr('readonly', true); // Hacer el campo 'username' de solo lectura
 
-                },
-                error: function(jqXHR, textStatus, errorThrow){
-                    console.log(textStatus, errorThrow);
-                    alert("Error al enviar el formulario: " + errorThrow)
-                }
-            })
+                $("#carnet").val(response["carnet"])
 
-        }
-
-        function eliminar(id){
-            let borrar = confirm(`Borrar Alumnos con Id ${id}`)
-
-            if(!borrar){
-                return;
+                openModal(); // Abre el modal de edición (debes definir esta función)
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error(textStatus, errorThrown);
+                alert("Error al obtener los datos del alumno: " + errorThrown);
             }
-            let url = `/administrar_alumnos/${id}`
-            $.ajax({
-                headers : {"X-CSRFToken": '{{csrf_token}}'},
-                type:"DELETE",
-                url:url,
-                // data:data,
-                success: function(r){
-                    location.reload()
-                },
-                error: function(jqXHR, textStatus, errorThrow){
-                    console.log(textStatus, errorThrow);
-                    alert("Error al enviar el formulario: " + errorThrow)
-                }
-            })
+        });
+    }
 
+    // Función para eliminar un alumno
+    function eliminar(carnet) {
+        let borrar = confirm(`¿Estás seguro de que deseas eliminar al alumno con carnet ${carnet}?`);
+
+        if (!borrar) {
+            return; // Cancelar la acción si el usuario selecciona "No"
         }
-    </script>
+
+        let url = `/administrar_alumnos/${carnet}`;
+        $.ajax({
+            headers: { "X-CSRFToken": '{{ csrf_token }}' }, // Token CSRF para seguridad
+            type: "DELETE",
+            url: url,
+            success: function (response) {
+                console.log("Alumno eliminado:", response);
+                location.reload(); // Recargar la página después de eliminar
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error(textStatus, errorThrown);
+                alert("Error al eliminar el alumno: " + errorThrown);
+            }
+        });
+    }
+
+    function openModal() {
+    const modal = document.getElementById('modal');
+    modal.classList.remove('hidden'); // Mostrar el modal
+    showStep(currentStep); // Iniciar en el paso actual
+}
+</script>
+
 {% endblock %}

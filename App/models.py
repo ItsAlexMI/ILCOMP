@@ -31,9 +31,8 @@ class Alumnos(models.Model):
     carnet = models.IntegerField(primary_key=True)
     nombre = models.CharField(max_length=200)
     ano_ingreso = models.IntegerField(default=0)
-    username_Alumno = models.CharField(max_length=100, unique=True)
-    id_plan_encabezado = models.ForeignKey(Plan_encabezado,on_delete=models.CASCADE)
-    usernameAlumno = models.CharField(max_length=100, unique=True)
+    username_alumno = models.CharField(max_length=100, unique=True)
+    id_plan_e = models.ForeignKey(Plan_encabezado,on_delete=models.CASCADE,db_column="id_plan_e")
 
 
 
