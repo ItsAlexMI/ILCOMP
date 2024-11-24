@@ -3,22 +3,31 @@
 {% block title %}Inicio{% endblock %}
 
 {% block content %}
-    <h1 class="flex justify-center text-3xl font-bold text-gray-800 mb-6 mt-6">Luis Ángel Jirón Chávez - 2019001</h1>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% if messages %}
+    <script>
+        {% for message in messages %}
+            Swal.fire({
+                icon: 'error',
+                title: '¡Error!',
+                text: '{{ message }}',
+                confirmButtonText: 'Aceptar',
+                background: '#f8d7da', // Fondo rojo para error
+                iconColor: '#721c24' // Color del icono de error
+            });
+        {% endfor %}
+    </script>
+{% endif %}
+
+
+{% if nombre %}
+    <h1 class="flex justify-center text-3xl font-bold text-gray-800 mb-6 mt-6">Bienvenido {{ nombre }}</h1>
     <div class="flex items-center justify-center bg-gray-50">
         <div class="text-center">
-          <p class="text-gray-600">La Universidad Iberoamericana de Ciencia y Tecnologia UNICIT POR CUANTO</p>
-          <p class="text-gray-600">Luis Angel Jirón Chávez</p>
-          <p class="text-gray-600">Natural de Nicaragua, con documento de identidad N°. 001-190201-1041X,</p>
-          <p class="text-gray-600">ha aprobado en el mes de marzo del año 2023 los estudios y requisitos académicos, conforme el Plan de Estudio de la carrera de Licenciatura en Farmacia</p>
-          <p class="text-gray-600 font-semibold">POR TANTO:</p>
-          <p class="text-gray-600">Le extiende el TITULO de: LICENCIADO EN FARMACIA</p>
-          <p class="text-gray-600">con las facultades y prerrogativas que legalmente le corresponden.</p>
-          <p class="text-gray-600">Dado en la ciudad de Managua, República de Nicaragua, a los 24 días del mes de noviembre del año dos mil veintitrés.</p>
-          <p class="text-gray-600"><strong>Firma ilegible</strong> Héctor Antonio Lacayo Hernández Rector,</p>
-          <p class="text-gray-600"><strong>firma ilegible</strong> Wendy Aracelly Vela Córdoba Secretaría General</p>
-          <p class="text-gray-600"> <strong>Registrado:</strong> Número 190. Folio 190. Tomo I del registro de títulos.</p>
-          <p class="text-gray-600">En la Ciudad de Managua, el día 24 del mes de noviembre del año 2023.</p>
-          <p    class="text-gray-600"><strong>Firma ilegible</strong> María Victoria Vasconcelos Henriquez Registro Académico.</p>
+          <h1 class="flex justify-center text-3xl font-bold text-gray-800 mb-6 mt-6">{{ nombre }} {{ carnet }}</h1>
+      {% else %}
+          <p class="text-red-600">{{ error }}</p>
+      {% endif %}
         </div>
       </div>
       

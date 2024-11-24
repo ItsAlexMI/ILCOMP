@@ -1,22 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-    <link
-      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <title>{% block title %}My Website{% endblock %}</title>
     <script>
@@ -25,7 +18,23 @@
             sidebar.classList.toggle('hidden');
         }
     </script>
+    {% if messages %}
+    <script>
+        {% for message in messages %}
+            Swal.fire({
+                icon: 'error',
+                title: '¡Error!',
+                text: '{{ message }}',
+                confirmButtonText: 'Aceptar',
+                background: '#f8d7da', // Fondo rojo para error
+                iconColor: '#721c24' // Color del icono de error
+            });
+        {% endfor %}
+    </script>
+    {% endif %}
+
 </head>
+
 <body class="flex">
 
     <!-- Button to toggle sidebar on mobile -->
@@ -40,12 +49,11 @@
         <div class="px-4 py-6">
 
             <!-- Logo -->
-                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtGLjD1G10BJPq-dqKzGP_ARom2W5k4iRIGQ&s" alt="Logo" class="h-16 w-auto rounded-full"/>
- 
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtGLjD1G10BJPq-dqKzGP_ARom2W5k4iRIGQ&s" alt="Logo" class="h-16 w-auto rounded-full" />
 
             <ul class="mt-6 space-y-1">
                 <li>
-                    <a href="/" class="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700">
+                    <a href="{% url 'app:home' %}" class="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700">
                         Inicio
                     </a>
                 </li>
@@ -56,55 +64,63 @@
                             <span class="text-sm font-medium"> Titulo </span>
                             <span class="shrink-0 transition duration-300 group-open:-rotate-180">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                 </svg>
                             </span>
                         </summary>
 
                         <ul class="mt-2 space-y-1 px-4">
+                            {% if carnet %}
                             <li>
-                                <a href="{% url 'app:Titulo_otorgado' %}" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                <a href="{% url 'app:Titulo_otorgado' carnet=carnet %}" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
                                     Titulo otorgado
-
                                 </a>
                             </li>
                             <li>
-                                <a href="certificacion_titulo" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
-                                    Certificacion de titulo
+                                <a href="{% url 'app:Certificacion_titulo' carnet=carnet %}" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                    Certificación de título
                                 </a>
                             </li>
+                            {% else %}
+                            <li class="text-gray-500 px-4 py-2 text-sm font-medium">Carnet no disponible</li>
+                            {% endif %}
                         </ul>
                     </details>
                 </li>
 
+                {% if carnet %}
                 <li>
-                    <a href="publicacion_gaceta" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
-                        Publicacion de la gaceta
+                    <a href="{% url 'app:Publicacion_gaceta' carnet=carnet %}" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                        Publicación de la gaceta
                     </a>
                 </li>
 
                 <li>
-                    <a href="#" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                    <a href="{% url 'app:Certificado_notas' carnet=carnet %}" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
                         Certificado de notas
                     </a>
                 </li>
 
                 <li>
-                    <a href="acta_culminacion" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
-                        Acta de culminacion
+                    <a href="{% url 'app:Acta_culminacion' carnet=carnet %}" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                        Acta de culminación
                     </a>
                 </li>
 
                 <li>
-                    <a href="plan_estudios" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                    <a href="{% url 'app:Plan_estudios' carnet=carnet %}" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
                         Plan de estudios
                     </a>
-            </ul> 
+                </li>
+                {% else %}
+                <li class="text-gray-500 px-4 py-2 text-sm font-medium">Carnet no disponible</li>
+                {% endif %}
+            </ul>
         </div>
 
         <div class="sticky inset-x-0 bottom-0 border-t border-gray-100">
             <a href="#" class="flex items-center gap-2 bg-white p-4 hover:bg-gray-50">
-                <img alt="" src="https://scontent.fmga3-2.fna.fbcdn.net/v/t39.30808-6/426407613_7129746117109424_309234087100680680_n.jpg?stp=cp6_dst-jpg&_nc_cat=105&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=s4pUx_r9M2oQ7kNvgHIKZCb&_nc_zt=23&_nc_ht=scontent.fmga3-2.fna&_nc_gid=APJA6JzvRqXa_qxfJifpsd8&oh=00_AYDPc1NcnPm5PBxifOIVtpFzQoRm9xjmLMN6kgFWP1E2DA&oe=6728CF88" class="size-10 rounded-full object-cover"/>
+                <img alt="" src="https://scontent.fmga3-2.fna.fbcdn.net/v/t39.30808-6/426407613_7129746117109424_309234087100680680_n.jpg?stp=cp6_dst-jpg&_nc_cat=105&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=s4pUx_r9M2oQ7kNvgHIKZCb&_nc_zt=23&_nc_ht=scontent.fmga3-2.fna&_nc_gid=APJA6JzvRqXa_qxfJifpsd8&oh=00_AYDPc1NcnPm5PBxifOIVtpFzQoRm9xjmLMN6kgFWP1E2DA&oe=6728CF88" class="size-10 rounded-full object-cover" />
                 <div class="text-center">
                     <p class="text-xs font-medium">
                         Luis Ángel Jirón Chávez
@@ -112,36 +128,26 @@
                     </p>
                 </div>
             </a>
-        
+
             <!-- Botón de cerrar sesión -->
-            <!-- <a href="#" class="flex items-center gap-2 block mt-5 rounded-lg px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 w-max ml-auto mr-auto">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                    <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
-                </svg>
-                Cerrar sesión
-            </a> -->
             <form method="post" action="{% url 'app:logout' %}">
                 {% csrf_token %}
                 <button type="submit" class="flex items-center gap-2 block mt-5 rounded-lg px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 w-max ml-auto mr-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
                         <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
-                    </svg> Cerrar sesión
+                    </svg>
+                    Cerrar sesión
                 </button>
-              </form>
-  
+            </form>
         </div>
-        
     </div>
 
-    <!-- Content Area -->
-    <div class="flex-1 p-6">
+    <!-- Contenido principal -->
+    <main class="w-full p-4 md:p-6">
         {% block content %}
         {% endblock %}
-    </div>
+    </main>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-
-    {% block js%}
-    {% endblock js%}
 </body>
+
 </html>

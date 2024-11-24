@@ -1,13 +1,12 @@
 {% extends 'layout.html' %}
 
-{% block title %}Titulo otorgado{% endblock %}
+{% block title %}Título Otorgado{% endblock %}
 
 {% block content %}
-
-<h1 class="flex justify-center text-3xl font-bold text-gray-800 mb-6 mt-6">Luis Ángel Jirón Chávez - 2019001</h1>
-
-<iframe src="http://registro-digital.unicit.edu.ni/wp-content/uploads/2024/04/LUIS-ANGEL-JIRON-CHAVEZ_TITULO.pdf" style="
-height: 1400px;
-width: 100%;"></iframe>
+{% if alumnos %}
+<a href="{% url 'app:Titulo_otorgado' carnet=alumno.carnet %}">Ver Título Otorgado</a>
+{% else %}
+<p>No hay alumnos registrados.</p>
+{% endif %}
 
 {% endblock %}

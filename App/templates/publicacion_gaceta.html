@@ -1,13 +1,9 @@
 {% extends 'layout.html' %}
 
-{% block title %}Publicacion de la gaceta{% endblock %}
+{% block title %}Publicación en Gaceta{% endblock %}
 
 {% block content %}
+    <h1 class="text-center text-3xl font-bold text-gray-800 mb-6 mt-6">{{ carnet }} - Publicación en Gaceta</h1>
 
-<h1 class="flex justify-center text-3xl font-bold text-gray-800 mb-6 mt-6">Luis Ángel Jirón Chávez - 2019001</h1>
-
-<iframe src="http://registro-digital.unicit.edu.ni/wp-content/uploads/2024/03/LUIS-ANGEL-JIRON-CHAVEZ_GACETA.pdf" style="
-height: 1400px;
-width: 100%;"></iframe>
-
+    <iframe src="{% url 'app:descargar_pdf' carnet=carnet tipo_documento='publicacion_gaceta' %}" style="height: 1000px; width: 100%; border: none;"></iframe>
 {% endblock %}
