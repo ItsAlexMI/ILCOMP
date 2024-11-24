@@ -25,28 +25,35 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Bucle para mostrar cada alumno -->
-                    {% for alumno in alumnos %}
-                    <tr class="bg-white border-b hover:bg-gray-50">
-                        <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ alumno.carnet }}</td>
-                        <td class="px-6 py-4">{{ alumno.nombre }}</td>
-                        <td class="px-6 py-4">{{ alumno.username }}</td>
-                        <td class="px-6 py-4">{{ alumno.plan_estudio }}</td>
-                        <td class="px-6 py-4">{{ alumno.ano_ingreso }}</td>
-                        <td class="px-6 py-4">
-                            <!-- Botón para editar -->
-                            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold"
-                                onclick="editar('{{ alumno.carnet }}')">
-                                Editar
-                            </button>
-                            <!-- Botón para eliminar -->
-                            <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold"
-                                onclick="eliminar('{{ alumno.carnet }}')">
-                                Eliminar
-                            </button>
-                        </td>
-                    </tr>
-                    {% endfor %}
+<!-- Bucle para mostrar cada alumno -->
+{% for alumno in alumnos %}
+<tr class="bg-white border-b hover:bg-gray-50">
+    <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ alumno.carnet }}</td>
+    <td class="px-6 py-4">{{ alumno.nombre }}</td>
+    <td class="px-6 py-4">{{ alumno.username }}</td>
+    <td class="px-6 py-4">
+        {% if alumno.plan_estudio %}
+            {{ alumno.plan_estudio }}
+        {% else %}
+            Sin Plan
+        {% endif %}
+    </td>
+    <td class="px-6 py-4">{{ alumno.ano_ingreso }}</td>
+    <td class="px-6 py-4">
+        <!-- Botón para editar -->
+        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold"
+            onclick="editar('{{ alumno.carnet }}')">
+            Editar
+        </button>
+        <!-- Botón para eliminar -->
+        <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold"
+            onclick="eliminar('{{ alumno.carnet }}')">
+            Eliminar
+        </button>
+    </td>
+</tr>
+{% endfor %}
+
                 </tbody>
                 
               <!--  <tr class="bg-white border-b hover:bg-gray-50">
