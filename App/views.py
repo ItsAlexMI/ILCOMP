@@ -11,34 +11,31 @@ import logging
 
 
 logger = logging.getLogger(__name__)
-# Create your views here.
+
 # @login_required()
 def home(request):
-    # Obtener el nombre de usuario del estudiante desde la sesión
     username = request.session.get('username')
 
-    # Realizar la consulta SQL directamente a la base de datos
     with connection.cursor() as cursor:
         cursor.execute("""
             SELECT * FROM alumnos WHERE username_alumno = %s
         """, [username])
-        estudiante = cursor.fetchone()  # Obtiene el primer resultado, si existe
+        estudiante = cursor.fetchone() 
 
-    # Si encontramos al estudiante, mandamos toda su información
     if estudiante:
         context = {
-            'nombre': estudiante[1],  # Asumiendo que la columna 1 es 'nombre'
-            'carnet': estudiante[0],  # Asumiendo que la columna 0 es 'carnet' (ya que el carnet es único)
+            'nombre': estudiante[1],  
+            'carnet': estudiante[0],  
         }
     else:
-        messages.error(request, "Estudiante no encontrado")  # Usar el sistema de mensajes de Django
+        messages.error(request, "Estudiante no encontrado")  
 
         context = {}
 
     return render(request, 'home.html', context)    
 
 def logout_view(request):
-    logout(request)  # Cerrar sesión correctamente
+    logout(request)  
     return HttpResponseRedirect("/login")
 
 
@@ -49,24 +46,19 @@ def login(request):
 
         if username and password:
             with connection.cursor() as cursor:
-                # Realizamos la consulta para obtener el usuario
                 cursor.execute("SELECT username, password, tipo FROM Usuario WHERE username = %s", [username])
                 user = cursor.fetchone()
 
                 if user:
-                    # Comprobamos que la contraseña coincida
                     if user[1] == password:
                         tipo = user[2]
 
-                        # Guardamos la información del usuario en la sesión
                         request.session['username'] = user[0]
                         request.session['tipo'] = tipo
 
-                        # Verificamos el tipo de usuario y redirigimos
                         if tipo == 1:  # Administrador
                             return redirect("app:gestion_docente")
                         else:
-                            # Obtener la URL 'next' si existe, sino redirigir a la raíz
                             next_url = request.GET.get('next', '/')
                             return redirect(next_url)
                     else:
@@ -78,7 +70,6 @@ def login(request):
     
     return render(request, 'login.html')
 
-# Función para mostrar PDFs
 def mostrar_pdf_estudiante(request, carnet, tipo_documento):
     with connection.cursor() as cursor:
         cursor.execute(
@@ -92,9 +83,8 @@ def mostrar_pdf_estudiante(request, carnet, tipo_documento):
             response = HttpResponse(pdf_content, content_type='application/pdf')
             return response
         else:
-            # Si el documento no está disponible, redirige con un mensaje de error
             messages.error(request, "El documento no está disponible.")
-            return redirect('app:home')  # Asegúrate de tener la URL correcta
+            return redirect('app:home')  
 
 
 # Vistas específicas para cada tipo de documento
@@ -116,22 +106,34 @@ def plan_estudios(request, carnet):
 def certificado_notas(request, carnet):
     return mostrar_pdf_estudiante(request, carnet, "certificado_notas")
 
-# Vistas de gestión de usuarios y docentes
 def gestion_usuario(request):
     return render(request, 'gestion_usuario.html')
 
 def gestion_alumno(request):
     context = {}
     try:
-        objs = Alumnos.objects.raw("SELECT * FROM alumnos ORDER BY carnet")
-        context["alumnos"] = objs
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT carnet, nombre, username_alumno, ano_ingreso FROM alumnos ORDER BY carnet")
+            rows = cursor.fetchall()
+
+        alumnos = [
+            {
+                "carnet": row[0],
+                "nombre": row[1],
+                "username": row[2],  
+                "ano_ingreso": row[3],
+            }
+            for row in rows
+        ]
+
+        context["alumnos"] = alumnos
+
     except Exception as e:
-        context["error"] = "No se pudo cargar la lista de alumnos."
+        context["error"] = f"No se pudo cargar la lista de alumnos. Error: {str(e)}"
+
     return render(request, 'gestion_alumno.html', context)
 
-# ==========================
-# Vista: Administrar Alumnos
-# ==========================
+
 def administrar_alumnos(request, carnet=None):
 
     if request.method == "POST":
@@ -143,9 +145,6 @@ def administrar_alumnos(request, carnet=None):
 
     return redirect("app:gestion_alumno")
 
-# ==============================
-# Funciones auxiliares
-# ==============================
 
 def _crear_actualizar_alumno(request, carnet= None):
     """
@@ -160,11 +159,11 @@ def _crear_actualizar_alumno(request, carnet= None):
 
     try:
         with transaction.atomic():
-            if not carnet:  # Crear un nuevo alumno
+            if not carnet: 
                 logger.info("Creando un nuevo alumno...")
                 with connection.cursor() as cursor:
                     cursor.execute('SELECT * FROM usuario WHERE "username"=%s', [username])
-                    if not cursor.fetchone():  # Verificar si el usuario no existe
+                    if not cursor.fetchone():  
                         cursor.execute(
                             'INSERT INTO usuario("username", nombre, tipo) VALUES (%s, %s, 2)',
                             [username, nombre]
@@ -174,7 +173,7 @@ def _crear_actualizar_alumno(request, carnet= None):
                         [nombre, username, ano_ingreso]
                     )
                 logger.info("Alumno creado exitosamente.")
-            else:  # Actualizar un alumno existente
+            else:  
                 logger.info(f"Actualizando el alumno con carnet: {carnet}...")
                 with connection.cursor() as cursor:
                     cursor.execute(
@@ -191,20 +190,30 @@ def _crear_actualizar_alumno(request, carnet= None):
 
 def _obtener_alumno(carnet):
     """
-    Obtiene los detalles de un alumno específico.
+    Obtiene los detalles de un alumno específico utilizando consultas SQL puras.
     """
     if not carnet:
         return JsonResponse({"error": "Carnet no proporcionado."}, status=400)
 
     try:
-        alumno = Alumnos.objects.filter(carnet=carnet).first()
-        if alumno:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT nombre, username_alumno, ano_ingreso, carnet
+                FROM alumnos
+                WHERE carnet = %s
+            """, [carnet])
+            row = cursor.fetchone()
+
+        if row:
+            print("Row fetched from database:", row)
             response_data = {
-                "nombre": alumno.nombre,
-                "username": alumno.username_alumno,
-                "ano_ingreso": alumno.ano_ingreso,
-                "carnet": alumno.carnet,
+                "nombre": row[0],
+                "username": row[1],  
+                "ano_ingreso": row[2],
+                "carnet": row[3],
             }
+            print("Mapped response_data:", response_data)
+
             return JsonResponse(response_data)
         else:
             return JsonResponse({"error": "Alumno no encontrado."}, status=404)
@@ -270,7 +279,6 @@ def administrar_docente(request, id=None):
 
     return redirect("app:gestion_docente")
 
-# Vista para subir PDFs
 def subir_pdf(request):
     if request.method == "POST":
         carnet = request.POST.get("carnet")
@@ -306,12 +314,10 @@ def gestion_notas(request):
 
 def eliminar_pdf(request, carnet, tipo_documento):
     with connection.cursor() as cursor:
-        # Intentamos eliminar el documento
         cursor.execute(
             "DELETE FROM documentos WHERE carnet = %s AND tipo_documento = %s",
             [carnet, tipo_documento]
         )
-        # Comprobamos si la eliminación fue exitosa
         if cursor.rowcount > 0:
             return JsonResponse({"message": "Documento eliminado correctamente."})
         else:
