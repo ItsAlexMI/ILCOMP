@@ -4,8 +4,7 @@
 
 {% block content %}
 
-<h1 class="flex justify-center text-3xl font-bold text-gray-800 mb-6 mt-6">Luis Ángel Jirón Chávez - 2019001</h1>
-
+<h1 class="text-center text-3xl font-bold text-gray-800 mb-6 mt-6">{{ carnet }} - Plan de Estudios</h1>
 <div class="flex items-center justify-center bg-gray-50 ">
     <table class="min-w-full bg-white shadow-md rounded-lg border border-gray-200">
         <thead>
@@ -149,9 +148,7 @@
 
 
 
-<iframe id="pdfViewer" src="http://registro-digital.unicit.edu.ni/wp-content/uploads/2024/05/LUIS-ANGEL-JIRON-CHAVEZ_PLAN-DE-ESTUDIO-RECOMENDADO.pdf" style="
-height: 1400px;
-width: 100%;" class="transition-all duration-300 ease-in-out mt-5"></iframe>
+<iframe src="{% url 'app:descargar_pdf' carnet=carnet tipo_documento='plan_estudios' %}" style="height: 1000px; width: 100%; border: none;"></iframe>
 
 <script>
     // JavaScript para alternar visibilidad del iframe
