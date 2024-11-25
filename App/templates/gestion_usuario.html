@@ -9,14 +9,14 @@
         <table class="w-full text-sm text-left text-gray-500">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                 <tr>
-                    <th scope="col" class="px-6 py-3">ID</th>
+
                     <th scope="col" class="px-6 py-3">Nombre</th>
                     <th scope="col" class="px-6 py-3">Username</th>
                     <th scope="col" class="px-6 py-3">Rol</th>
                     <th scope="col" class="px-6 py-3">Acciones</th>
                 </tr>
             </thead>
-            <tbody>
+            {% comment %} <tbody>
                 <!-- Ejemplo de fila de usuario -->
                 <tr class="bg-white border-b hover:bg-gray-50">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
@@ -75,7 +75,28 @@
                     </td>
                 </tr>
     
-            </tbody>
+            </tbody> {% endcomment %}
+
+            <!-- Bucle para mostrar cada usuario -->
+            {% for usuario in usuarios %}
+                <tr class="bg-white border-b hover:bg-gray-50">
+  
+                    <td class="px-6 py-4">
+                        {{ usuario.nombre }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ usuario.username }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ usuario.tipo }}
+                    </td>
+                    <td class="px-6 py-4">
+                        <a href="#" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold">Editar</a>
+                        <a href="#" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+
         </table>
     </div>
     

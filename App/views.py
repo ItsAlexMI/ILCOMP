@@ -12,6 +12,26 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+def layout(request):
+    username = request.session.get('username')  
+
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT * FROM alumnos WHERE username_alumno = %s
+        """, [username])
+        estudiante = cursor.fetchone() 
+
+    if estudiante:
+        context = {
+            'nombre': estudiante[1],  
+            'carnet': estudiante[0],  
+        }
+    else:
+        messages.error(request, "Estudiante no encontrado")  
+
+        context = {}
+    return render(request, 'layout.html', context)
+
 # @login_required()
 def home(request):
     username = request.session.get('username')
@@ -107,7 +127,26 @@ def certificado_notas(request, carnet):
     return mostrar_pdf_estudiante(request, carnet, "certificado_notas")
 
 def gestion_usuario(request):
-    return render(request, 'gestion_usuario.html')
+    context = {}
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT username, nombre, tipo FROM usuario ORDER BY nombre")
+            rows = cursor.fetchall()
+
+        usuarios = [
+            {
+                "username": row[0],
+                "nombre": row[1],
+                "tipo": row[2],
+            }
+            for row in rows
+        ]
+
+        context["usuarios"] = usuarios
+
+    except Exception as e:
+        context["error"] = f"No se pudo cargar la lista de usuarios. Error: {str(e)}"
+    return render(request, 'gestion_usuario.html', context)
 
 def gestion_alumno(request):
     context = {}
@@ -280,6 +319,7 @@ def administrar_docente(request, id=None):
     return redirect("app:gestion_docente")
 
 def subir_pdf(request):
+    context = {}
     if request.method == "POST":
         carnet = request.POST.get("carnet")
         tipo_documento = request.POST.get("tipo_documento")
@@ -302,8 +342,18 @@ def subir_pdf(request):
                 messages.success(request, "Archivo subido correctamente.")
         else:
             messages.error(request, "Por favor, complete todos los campos y cargue un archivo válido.")
+    # Recuperar lista de estudiantes para el select
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT carnet, nombre FROM alumnos ORDER BY nombre")
+            estudiantes = cursor.fetchall()
+        context['estudiantes'] = [{'carnet': e[0], 'nombre': e[1]} for e in estudiantes]
+    except Exception as e:
+        context['error'] = f"No se pudieron cargar los estudiantes. Error: {str(e)}"
 
-    return render(request, "subir_pdf.html")
+    return render(request, "subir_pdf.html", context)
+
+
 
 
 def gestion_CP(request):
