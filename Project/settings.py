@@ -137,3 +137,4 @@ LOGIN_URL = '/login/'  # Redirige al login si el usuario no está autenticado
 
 # Redirigir después de hacer logout
 LOGOUT_REDIRECT_URL = '/login/'
+X_FRAME_OPTIONS = 'SAMEORIGIN'

@@ -1,0 +1,63 @@
+{% extends 'layout_admin.html' %}
+
+{% block title %}Subir Documento{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-center min-h-screen bg-gray-50 p-6">
+    <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-xl">
+        <h1 class="text-center text-3xl font-bold text-gray-800 mb-6">Subir Documento</h1>
+
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- Seleccionar Estudiante -->
+            <div class="mb-4">
+                <label for="carnet" class="block text-gray-700 font-medium">Seleccione un estudiante:</label>
+                <select name="carnet" id="carnet" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition duration-300">
+                    {% for estudiante in estudiantes %}
+                        <option value="{{ estudiante.carnet }}">{{ estudiante.nombre }} ({{ estudiante.carnet }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Seleccionar Tipo de Documento -->
+            <div class="mb-4">
+                <label for="tipo_documento" class="block text-gray-700 font-medium">Tipo de documento:</label>
+                <select name="tipo_documento" id="tipo_documento" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition duration-300">
+                    <option value="titulo_otorgado">Título Otorgado</option>
+                    <option value="certificacion_titulo">Certificación de Título</option>
+                    <option value="publicacion_gaceta">Publicación en Gaceta</option>
+                    <option value="acta_culminacion">Acta de Culminación</option>
+                    <option value="plan_estudios">Plan de Estudios</option>
+                    <option value="certificado_notas">Certificado de Notas</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="archivo" class="block text-gray-700 font-medium">Selecciona el archivo PDF:</label>
+                <div class="flex items-center justify-between border border-gray-300 rounded-lg px-4 py-2 focus-within:ring-2 focus-within:ring-purple-300 focus-within:border-purple-500 transition duration-300">
+                    <input type="file" name="archivo" id="archivo" class="hidden" />
+                    <span id="file-name" class="text-gray-500">No se ha seleccionado un archivo</span>
+                    <label for="archivo" class="cursor-pointer bg-purple-500 text-white py-2 px-4 rounded-lg hover:bg-purple-600 focus:ring-4 focus:ring-purple-200 transition duration-300 ease-in-out">
+                        Seleccionar archivo
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Botón de Subir -->
+            <div class="mb-4">
+                <button type="submit" class="bg-violet-600 hover:bg-violet-500 text-white font-bold py-2 px-4 border-b-4 border-violet-900 hover:border-violet-600 rounded w-full">
+                    Subir Documento
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('archivo').addEventListener('change', function(event) {
+        const fileName = event.target.files.length ? event.target.files[0].name : 'No se ha seleccionado un archivo';
+        document.getElementById('file-name').textContent = fileName;
+    });
+</script>
+
+{% endblock %}

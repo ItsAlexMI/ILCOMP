@@ -48,9 +48,29 @@
     <div id="sidebar" class="flex h-screen flex-col justify-between border-e bg-white w-64 md:block hidden">
         <div class="px-4 py-6">
 
-            <!-- Logo -->
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtGLjD1G10BJPq-dqKzGP_ARom2W5k4iRIGQ&s" alt="Logo" class="h-16 w-auto rounded-full" />
-
+            <div class="flex items-center gap-4 bg-purple-500 rounded-full">
+                <!-- Logo de la izquierda -->
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtGLjD1G10BJPq-dqKzGP_ARom2W5k4iRIGQ&s" alt="Logo" class="h-16 w-auto rounded-full" />
+            
+                <!-- Información del estudiante -->
+                <div class="flex flex-col">
+                    <p class="text-lg font-bold text-white ">
+                        {% if nombre %}
+                            {{ nombre }}
+                        {% else %}
+                            Nombre no disponible
+                        {% endif %}
+                    </p>
+                    <span class="text-gray-100 font-bold text-center text-xs">
+                        {% if carnet %}
+                            {{ carnet }}
+                        {% else %}
+                            Carnet no disponible
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            
             <ul class="mt-6 space-y-1">
                 <li>
                     <a href="{% url 'app:home' %}" class="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700">
@@ -119,15 +139,7 @@
         </div>
 
         <div class="sticky inset-x-0 bottom-0 border-t border-gray-100">
-            <a href="#" class="flex items-center gap-2 bg-white p-4 hover:bg-gray-50">
-                <img alt="" src="https://scontent.fmga3-2.fna.fbcdn.net/v/t39.30808-6/426407613_7129746117109424_309234087100680680_n.jpg?stp=cp6_dst-jpg&_nc_cat=105&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=s4pUx_r9M2oQ7kNvgHIKZCb&_nc_zt=23&_nc_ht=scontent.fmga3-2.fna&_nc_gid=APJA6JzvRqXa_qxfJifpsd8&oh=00_AYDPc1NcnPm5PBxifOIVtpFzQoRm9xjmLMN6kgFWP1E2DA&oe=6728CF88" class="size-10 rounded-full object-cover" />
-                <div class="text-center">
-                    <p class="text-xs font-medium">
-                        Luis Ángel Jirón Chávez
-                        <span class="text-gray-400">2019001</span>
-                    </p>
-                </div>
-            </a>
+
 
             <!-- Botón de cerrar sesión -->
             <form method="post" action="{% url 'app:logout' %}">
