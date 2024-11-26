@@ -4,6 +4,7 @@ from django.db import connection, transaction
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib import messages
+from django.contrib.auth.hashers import make_password           
 from .models import *
 import base64
 import logging
@@ -74,7 +75,7 @@ def login(request):
                         if tipo == 1:  # Administrador
                             return redirect("app:gestion_docente")
                         elif tipo == 0:          # Estudiante
-                            return redirect("app:gestion_notas")
+                            return redirect("app:subir_pdf")
                         else:
                             return redirect("app:home") 
                     else:
@@ -141,7 +142,7 @@ def acta_culminacion(request, carnet):
 
 def plan_estudios(request, carnet):
     return mostrar_pdf_estudiante(request, carnet, "plan_estudios")
-
+            
 def certificado_notas(request, carnet):
     return mostrar_pdf_estudiante(request, carnet, "certificado_notas")
 
@@ -186,14 +187,15 @@ def _crear_actualizar_usuario(request, username=None):
     data = request.POST
     nombre = data.get("nombre")
     tipo = data.get("tipo")
+    password = data.get("password")
     try:
         with transaction.atomic():
             if not username:
                 # Crear usuario
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO usuario(username, nombre, tipo) VALUES (%s, %s, %s)",
-                        [data.get("username"), nombre, tipo]
+                        "INSERT INTO usuario(username, nombre, tipo, password) VALUES (%s, %s, %s, %s)",
+                        [data.get("username"), nombre, tipo, password]
                     )
                 logger.info("Usuario creado exitosamente.")
             else:
@@ -315,7 +317,7 @@ def _crear_actualizar_alumno(request, carnet= None):
                     cursor.execute('SELECT * FROM usuario WHERE "username"=%s', [username])
                     if not cursor.fetchone():  
                         cursor.execute(
-                            'INSERT INTO usuario("username", nombre, tipo) VALUES (%s, %s, 2)',
+                            'INSERT INTO usuario("username", nombre, tipo, password) VALUES (%s, %s, 2, 123)',
                             [username, nombre]
                         )
                     cursor.execute(
@@ -466,9 +468,72 @@ def subir_pdf(request):
 
 
 
-
+@login_required_custom
 def gestion_CP(request):
-    return render(request, 'gestion_CP.html')
+    """
+    Vista para gestionar los planes de estudio (CRUD).
+    """
+    context = {}
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT id, nombre FROM plan_encabezado ORDER BY id")
+            rows = cursor.fetchall()
+
+        planes = [
+            {"id": row[0], "nombre": row[1]}
+            for row in rows
+        ]
+
+        context["planes"] = planes
+
+    except Exception as e:
+        context["error"] = f"No se pudo cargar la lista de planes. Error: {str(e)}"
+
+    return render(request, 'gestion_CP.html', context)
+
+@login_required_custom
+def administrar_CP(request, id=None):
+    """
+    Crear o actualizar un plan de estudio.
+    """
+    if request.method == "POST":
+        datos = request.POST
+        nombre = datos.get("nombre")
+
+        try:
+            with transaction.atomic():
+                if not id:  # Crear nuevo plan
+                    with connection.cursor() as cursor:
+                        cursor.execute(
+                            "INSERT INTO plan_encabezado (nombre) VALUES (%s)",
+                            [nombre]
+                        )
+                else:  # Actualizar plan existente
+                    with connection.cursor() as cursor:
+                        cursor.execute(
+                            "UPDATE plan_encabezado SET nombre = %s WHERE id = %s",
+                            [nombre, id]
+                        )
+
+            messages.success(request, "Plan de estudio guardado correctamente.")
+        except Exception as e:
+            messages.error(request, f"Error al guardar el plan de estudio: {str(e)}")
+
+    return redirect("app:gestion_CP")
+
+@login_required_custom
+def eliminar_CP(request, id):
+    """
+    Eliminar un plan de estudio.
+    """
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM plan_encabezado WHERE id = %s", [id])
+        messages.success(request, "Plan de estudio eliminado correctamente.")
+    except Exception as e:
+        messages.error(request, f"Error al eliminar el plan de estudio: {str(e)}")
+
+    return redirect("app:gestion_CP")
 
 def gestion_notas(request):
     return render(request, 'gestion_notas.html')

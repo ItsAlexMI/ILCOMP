@@ -48,27 +48,11 @@
     <div id="sidebar" class="flex h-screen flex-col justify-between border-e bg-white w-64 md:block hidden">
         <div class="px-4 py-6">
 
-            <div class="flex items-center gap-4 bg-purple-500 rounded-full">
+            <div class="flex items-center gap-4 ">
                 <!-- Logo de la izquierda -->
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtGLjD1G10BJPq-dqKzGP_ARom2W5k4iRIGQ&s" alt="Logo" class="h-16 w-auto rounded-full" />
             
-                <!-- Información del estudiante -->
-                <div class="flex flex-col">
-                    <p class="text-lg font-bold text-white ">
-                        {% if nombre %}
-                            {{ nombre }}
-                        {% else %}
-                            Nombre no disponible
-                        {% endif %}
-                    </p>
-                    <span class="text-gray-100 font-bold text-center text-xs">
-                        {% if carnet %}
-                            {{ carnet }}
-                        {% else %}
-                            Carnet no disponible
-                        {% endif %}
-                    </span>
-                </div>
+
             </div>
             
             <ul class="mt-6 space-y-1">

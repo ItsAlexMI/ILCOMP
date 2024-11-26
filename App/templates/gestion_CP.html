@@ -9,12 +9,7 @@ Estudio
 
 <!-- Botones para crear cursos y planes de estudio -->
 <div class="flex gap-4 mb-6">
-  <button
-    onclick="showTable('cursoTable')"
-    class="mb-2 mt-10 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300 font-semibold"
-  >
-    Cursos
-  </button>
+
   <button
     onclick="showTable('planEstudioTable')"
     class="mb-2 mt-10 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300 font-semibold"
@@ -92,9 +87,9 @@ Estudio
       </tr>
     </thead>
     <tbody>
-      <tr class="bg-white border-b hover:bg-gray-50">
+      {% comment %} <tr class="bg-white border-b hover:bg-gray-50">
         <th
-          scope="row"
+          scope="row" 
           class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
         >
           1
@@ -112,74 +107,29 @@ Estudio
             >Editar</a
           >
         </td>
-      </tr>
+      </tr> {% endcomment %}
+
+      {% for plan in planes %}
+      <tr class="bg-white border-b hover:bg-gray-50">
+        <th
+          scope="row"
+          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+        > 
+          {{plan.id}}
+        </th>
+        <td class="px-6 py-4">{{plan.nombre}}</td>
+        <td class="px-6 py-4 flex space-x-2">
+          <a
+            href="#"
+            class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold"
+            >Eliminar</a
+          >
+ 
+        </td>
       <!-- Repite las filas según los datos en la base de datos -->
     </tbody>
+    {% endfor %}
   </table>
-</div>
-
-<!-- Modal para Cursos -->
-<div id="modalCurso" class="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
-    <div class="modal-content bg-white w-full max-w-md mx-auto p-8 rounded-lg shadow-lg relative">
-        <!-- Botón de cerrar modal -->
-        <button onclick="closeCursoModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-800">&times;</button>
-
-        <!-- Barra de Progreso con Círculos de Pasos -->
-        <div class="relative flex items-center justify-between">
-            <!-- Barra de Progreso -->
-            <div id="cursoProgressBarContainer" class="relative w-full h-2 bg-gray-300 rounded-full">
-                <div id="cursoProgressBar" class="absolute h-2 bg-purple-500 rounded-full"></div>
-            </div>
-
-            <!-- Círculos de Pasos -->
-            <div class="absolute flex justify-between w-full -top-4 px-2">
-                <div class="step-circle" data-step="1">1</div>
-                <div class="step-circle" data-step="2">2</div>
-                <div class="step-circle" data-step="3">3</div>
-            </div>
-        </div>
-
-        <!-- Formulario -->
-        <form id="cursoSteps" class="relative mt-8">
-            {% csrf_token %}
-            <!-- Paso 1: Información del Curso -->
-            <div id="cursoStep1" class="step transition-opacity duration-500">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Información del Curso</h2>
-                <label class="block text-gray-700 text-sm font-semibold mb-2">Nombre del Curso</label>
-                <input type="text" id="cursoNombre" name="nombre" class="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
-
-                <button type="button" onclick="nextCursoStep()" class="w-full mt-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300">Siguiente</button>
-            </div>
-
-            <!-- Paso 2: Detalles del Curso -->
-            <div id="cursoStep2" class="step hidden opacity-0 transition-opacity duration-500">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Detalles del Curso</h2>
-                <label class="block text-gray-700 text-sm font-semibold mb-2">Descripción</label>
-                <textarea id="cursoDescripcion" name="descripcion" class="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required></textarea>
-
-                <div class="flex justify-between mt-6">
-                    <button type="button" onclick="prevCursoStep()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300">Anterior</button>
-                    <button type="button" onclick="nextCursoStep()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300">Siguiente</button>
-                </div>
-            </div>
-
-            <!-- Paso 3: Asignación de Plan de Estudio -->
-            <div id="cursoStep3" class="step hidden opacity-0 transition-opacity duration-500">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Asignar Plan de Estudio</h2>
-                <label class="block text-gray-700 text-sm font-semibold mb-2">Seleccionar Plan de Estudio</label>
-                <select id="cursoPlanEstudio" name="plan_estudio" class="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
-                    <option value="plan1">Plan 1</option>
-                    <option value="plan2">Plan 2</option>
-                    <!-- Opciones dinámicas según la base de datos -->
-                </select>
-
-                <div class="flex justify-between mt-6">
-                    <button type="button" onclick="prevCursoStep()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300">Anterior</button>
-                    <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300">Guardar</button>
-                </div>
-            </div>
-        </form>
-    </div>
 </div>
 
   
@@ -202,58 +152,33 @@ Estudio
       </div>
     </div>
   </div> {% endcomment %}
-  <div id="modalPlanEstudio" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
-    <div class="modal-content bg-white w-full max-w-md mx-auto p-8 rounded-lg shadow-lg relative">
-      <!-- Botón de cerrar modal -->
-      <button onclick="closePlanEstudioModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-800">&times;</button>
-  
-      <!-- Barra de Progreso con Círculos de Pasos -->
-      <div class="relative flex items-center justify-between">
-        <div id="planEstudioProgressBarContainer" class="relative w-full h-2 bg-gray-300 rounded-full">
-          <div id="planEstudioProgressBar" class="absolute h-2 bg-purple-500 rounded-full"></div>
-        </div>
-        <div class="absolute flex justify-between w-full -top-4 px-2">
-          <div class="step-circle" data-step="1">1</div>
-          <div class="step-circle" data-step="2">2</div>
-          <div class="step-circle" data-step="3">3</div>
-        </div>
-      </div>
-  
-      <!-- Formulario -->
-      <form id="planEstudioSteps" class="relative mt-8">
-        {% csrf_token %}
-        <!-- Paso 1 -->
-        <div id="planEstudioStep1" class="step transition-opacity duration-500">
-          <h2 class="text-2xl font-semibold text-gray-800 mb-4">Información del Plan de Estudio</h2>
-          <label class="block text-gray-700 text-sm font-semibold mb-2">Nombre del Plan de Estudio</label>
-          <input type="text" id="planNombre" name="planNombre" class="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
-          <button type="button" onclick="nextPlanEstudioStep()" class="w-full mt-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300">Siguiente</button>
-        </div>
-  
-        <!-- Paso 2 -->
-        <div id="planEstudioStep2" class="step hidden opacity-0 transition-opacity duration-500">
-          <h2 class="text-2xl font-semibold text-gray-800 mb-4">Detalles del Plan de Estudio</h2>
-          <label class="block text-gray-700 text-sm font-semibold mb-2">Descripción</label>
-          <textarea id="planDescripcion" name="planDescripcion" class="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required></textarea>
-          <div class="flex justify-between mt-6">
-            <button type="button" onclick="prevPlanEstudioStep()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300">Anterior</button>
-            <button type="button" onclick="nextPlanEstudioStep()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300">Siguiente</button>
-          </div>
-        </div>
-  
-        <!-- Paso 3 -->
-        <div id="planEstudioStep3" class="step hidden opacity-0 transition-opacity duration-500">
-          <h2 class="text-2xl font-semibold text-gray-800 mb-4">Confirmación</h2>
-          <p class="text-gray-700">¿Estás seguro de que quieres crear este Plan de Estudio?</p>
-          <div class="flex justify-between mt-6">
-            <button type="button" onclick="prevPlanEstudioStep()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300">Anterior</button>
-            <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300">Guardar</button>
-          </div>
-        </div>
-      </form>
-    </div>
+<!-- Modal para crear Plan de Estudio -->
+<div id="modalPlanEstudio" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
+  <div class="modal-content bg-white w-full max-w-md mx-auto p-8 rounded-lg shadow-lg relative">
+    <!-- Botón para cerrar el modal -->
+    <button onclick="closePlanEstudioModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-800">
+      &times;
+    </button>
+    <!-- Formulario -->
+    <form action="{% url 'crear_plan_estudio' %}" method="POST" class="mt-6">
+      {% csrf_token %}
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Crear Plan de Estudio</h2>
+      <label class="block text-gray-700 text-sm font-semibold mb-2">Nombre del Plan de Estudio</label>
+      <input
+        type="text"
+        name="nombre"
+        class="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+        required
+      >
+      <button
+        type="submit"
+        class="w-full py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300"
+      >
+        Guardar
+      </button>
+    </form>
   </div>
-
+</div>
   
   
 <script>
