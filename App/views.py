@@ -315,7 +315,7 @@ def _crear_actualizar_alumno(request, carnet= None):
                     cursor.execute('SELECT * FROM usuario WHERE "username"=%s', [username])
                     if not cursor.fetchone():  
                         cursor.execute(
-                            'INSERT INTO usuario("username", nombre, tipo) VALUES (%s, %s, 2)',
+                            'INSERT INTO usuario("username", nombre, tipo, password) VALUES (%s, %s, 2, 123)',
                             [username, nombre]
                         )
                     cursor.execute(
