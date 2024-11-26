@@ -73,8 +73,10 @@ def login(request):
 
                         if tipo == 1:  # Administrador
                             return redirect("app:gestion_docente")
-                        else:          # Estudiante
-                            return redirect("app:home")
+                        elif tipo == 0:          # Estudiante
+                            return redirect("app:gestion_notas")
+                        else:
+                            return redirect("app:home") 
                     else:
                         messages.error(request, "Usuario o contraseña incorrectos.")
                 else:
