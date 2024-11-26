@@ -145,97 +145,90 @@ def certificado_notas(request, carnet):
 
 @login_required_custom
 def gestion_usuario(request):
+    """
+    Vista para obtener y renderizar la lista de usuarios.
+    """
     context = {}
     try:
         with connection.cursor() as cursor:
             cursor.execute("SELECT username, nombre, tipo FROM usuario ORDER BY nombre")
             rows = cursor.fetchall()
-
         usuarios = [
-            {
-                "username": row[0],
-                "nombre": row[1],
-                "tipo": row[2],
-            }
-            for row in rows
+            {"username": fila[0], "nombre": fila[1], "tipo": fila[2]}
+            for fila in rows
         ]
-
         context["usuarios"] = usuarios
-
     except Exception as e:
+        logger.error(f"Error al obtener usuarios: {e}")
         context["error"] = f"No se pudo cargar la lista de usuarios. Error: {str(e)}"
     return render(request, 'gestion_usuario.html', context)
 
+
 def administrar_usuario(request, username=None):
+    """
+    Vista principal para manejar usuarios (crear, actualizar y eliminar).
+    """
     if request.method == "POST":
         return _crear_actualizar_usuario(request, username)
     elif request.method == "GET":
         return _obtener_usuario(username)
     elif request.method == "DELETE":
         return _eliminar_usuario(username)
-
     return redirect("app:gestion_usuario")
 
 
 def _crear_actualizar_usuario(request, username=None):
     """
-    Crea o actualiza un usuario en la base de datos.
+    Crear o actualizar un usuario en la base de datos.
     """
-    datos = request.POST
-    nombre = datos.get("nombre")
-    tipo = datos.get("tipo")
-
+    data = request.POST
+    nombre = data.get("nombre")
+    tipo = data.get("tipo")
     try:
         with transaction.atomic():
             if not username:
-                logger.info("Creando un nuevo usuario...")
+                # Crear usuario
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        'INSERT INTO usuario(username, nombre, tipo) VALUES (%s, %s, %s)',
-                        [username, nombre, tipo]
+                        "INSERT INTO usuario(username, nombre, tipo) VALUES (%s, %s, %s)",
+                        [data.get("username"), nombre, tipo]
                     )
                 logger.info("Usuario creado exitosamente.")
             else:
-                logger.info(f"Actualizando el usuario con username: {username}...")
+                # Actualizar usuario
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        'UPDATE usuario SET nombre=%s, tipo=%s WHERE username=%s',
+                        "UPDATE usuario SET nombre=%s, tipo=%s WHERE username=%s",
                         [nombre, tipo, username]
                     )
-                logger.info("Usuario actualizado exitosamente.")
+                logger.info(f"Usuario actualizado exitosamente: {username}")
     except Exception as e:
         logger.error(f"Error al crear/actualizar usuario: {e}")
         return JsonResponse({"error": str(e)}, status=500)
-
     return redirect("app:gestion_usuario")
 
 
 def _obtener_usuario(username):
     """
-    Obtiene los detalles de un usuario específico utilizando consultas SQL puras.
+    Obtener los detalles de un usuario específico.
     """
     if not username:
-        return JsonResponse({"error": "Username no proporcionado."}, status=400)
-
+        return JsonResponse({"error": "Nombre de usuario no proporcionado."}, status=400)
     try:
         with connection.cursor() as cursor:
-            cursor.execute("""
-                SELECT nombre, tipo, username
-                FROM usuario
-                WHERE username = %s
-            """, [username])
-            row = cursor.fetchone()
-
-        if row:
+            cursor.execute(
+                "SELECT nombre, tipo, username FROM usuario WHERE username = %s",
+                [username]
+            )
+            fila = cursor.fetchone()
+        if fila:
             response_data = {
-                "nombre": row[0],
-                "tipo": row[1],
-                "username": row[2],
+                "nombre": fila[0],
+                "tipo": fila[1],
+                "username": fila[2],
             }
-
             return JsonResponse(response_data)
-        else:
-            return JsonResponse({"error": "Usuario no encontrado."}, status=404)
+        return JsonResponse({"error": "Usuario no encontrado."}, status=404)
     except Exception as e:
         logger.error(f"Error al obtener usuario: {e}")
         return JsonResponse({"error": str(e)}, status=500)
@@ -243,20 +236,27 @@ def _obtener_usuario(username):
 
 def _eliminar_usuario(username):
     """
-    Elimina un usuario de la base de datos.
+    Eliminar un usuario de la base de datos y sus relaciones dependientes.
     """
     if not username:
-        return JsonResponse({"error": "Username no proporcionado."}, status=400)
-
+        return JsonResponse({"error": "Nombre de usuario no proporcionado."}, status=400)
     try:
         with connection.cursor() as cursor:
-            cursor.execute("DELETE FROM usuario WHERE username=%s", [username])
-        logger.info(f"Usuario con username {username} eliminado exitosamente.")
+            # Eliminar primero los registros dependientes en Alumnos
+            cursor.execute("DELETE FROM alumnos WHERE username_alumno = %s", [username])
+
+            # Eliminar primero los registros dependientes en Docente
+            cursor.execute("DELETE FROM docente WHERE username = %s", [username])
+
+            # Ahora eliminar el usuario
+            cursor.execute("DELETE FROM usuario WHERE username = %s", [username])
+
+        logger.info(f"Usuario eliminado: {username}")
         return JsonResponse({"success": "Usuario eliminado"})
     except Exception as e:
         logger.error(f"Error al eliminar usuario: {e}")
         return JsonResponse({"error": str(e)}, status=500)
- 
+    
 def gestion_alumno(request):
     context = {}
     try:
