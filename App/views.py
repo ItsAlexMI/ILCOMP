@@ -12,6 +12,21 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+def login_required_custom(view_func):
+    """
+    Función decoradora personalizada que redirige al login si el usuario no está autenticado.
+    """
+    def _wrapped_view(request, *args, **kwargs):
+        # Verificar si el usuario está autenticado
+        if not request.session.get('username'):
+            messages.error(request, "Por favor, inicie sesión para acceder a esta página.")
+            return redirect('app:login')  # Redirige a la página de login
+
+        # Si el usuario está autenticado, se ejecuta la vista
+        return view_func(request, *args, **kwargs)
+
+    return _wrapped_view
+
 def layout(request):
     username = request.session.get('username')  
 
@@ -32,27 +47,7 @@ def layout(request):
         context = {}
     return render(request, 'layout.html', context)
 
-# @login_required()
-def home(request):
-    username = request.session.get('username')
 
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT * FROM alumnos WHERE username_alumno = %s
-        """, [username])
-        estudiante = cursor.fetchone() 
-
-    if estudiante:
-        context = {
-            'nombre': estudiante[1],  
-            'carnet': estudiante[0],  
-        }
-    else:
-        messages.error(request, "Estudiante no encontrado")  
-
-        context = {}
-
-    return render(request, 'home.html', context)    
 
 def logout_view(request):
     logout(request)  
@@ -78,9 +73,8 @@ def login(request):
 
                         if tipo == 1:  # Administrador
                             return redirect("app:gestion_docente")
-                        else:
-                            next_url = request.GET.get('next', '/')
-                            return redirect(next_url)
+                        else:          # Estudiante
+                            return redirect("app:home")
                     else:
                         messages.error(request, "Usuario o contraseña incorrectos.")
                 else:
@@ -89,6 +83,29 @@ def login(request):
             messages.error(request, "Por favor, complete todos los campos.")
     
     return render(request, 'login.html')
+
+
+@login_required_custom
+def home(request):
+    username = request.session.get('username')
+
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT * FROM alumnos WHERE username_alumno = %s
+        """, [username])
+        estudiante = cursor.fetchone() 
+
+    if estudiante:
+        context = {
+            'nombre': estudiante[1],  
+            'carnet': estudiante[0],  
+        }
+    else:
+        messages.error(request, "Estudiante no encontrado")  
+
+        context = {}
+
+    return render(request, 'home.html', context)    
 
 def mostrar_pdf_estudiante(request, carnet, tipo_documento):
     with connection.cursor() as cursor:
@@ -126,6 +143,7 @@ def plan_estudios(request, carnet):
 def certificado_notas(request, carnet):
     return mostrar_pdf_estudiante(request, carnet, "certificado_notas")
 
+@login_required_custom
 def gestion_usuario(request):
     context = {}
     try:
@@ -148,6 +166,97 @@ def gestion_usuario(request):
         context["error"] = f"No se pudo cargar la lista de usuarios. Error: {str(e)}"
     return render(request, 'gestion_usuario.html', context)
 
+def administrar_usuario(request, username=None):
+    if request.method == "POST":
+        return _crear_actualizar_usuario(request, username)
+    elif request.method == "GET":
+        return _obtener_usuario(username)
+    elif request.method == "DELETE":
+        return _eliminar_usuario(username)
+
+    return redirect("app:gestion_usuario")
+
+
+def _crear_actualizar_usuario(request, username=None):
+    """
+    Crea o actualiza un usuario en la base de datos.
+    """
+    datos = request.POST
+    nombre = datos.get("nombre")
+    tipo = datos.get("tipo")
+
+    try:
+        with transaction.atomic():
+            if not username:
+                logger.info("Creando un nuevo usuario...")
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        'INSERT INTO usuario(username, nombre, tipo) VALUES (%s, %s, %s)',
+                        [username, nombre, tipo]
+                    )
+                logger.info("Usuario creado exitosamente.")
+            else:
+                logger.info(f"Actualizando el usuario con username: {username}...")
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        'UPDATE usuario SET nombre=%s, tipo=%s WHERE username=%s',
+                        [nombre, tipo, username]
+                    )
+                logger.info("Usuario actualizado exitosamente.")
+    except Exception as e:
+        logger.error(f"Error al crear/actualizar usuario: {e}")
+        return JsonResponse({"error": str(e)}, status=500)
+
+    return redirect("app:gestion_usuario")
+
+
+def _obtener_usuario(username):
+    """
+    Obtiene los detalles de un usuario específico utilizando consultas SQL puras.
+    """
+    if not username:
+        return JsonResponse({"error": "Username no proporcionado."}, status=400)
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT nombre, tipo, username
+                FROM usuario
+                WHERE username = %s
+            """, [username])
+            row = cursor.fetchone()
+
+        if row:
+            response_data = {
+                "nombre": row[0],
+                "tipo": row[1],
+                "username": row[2],
+            }
+
+            return JsonResponse(response_data)
+        else:
+            return JsonResponse({"error": "Usuario no encontrado."}, status=404)
+    except Exception as e:
+        logger.error(f"Error al obtener usuario: {e}")
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+def _eliminar_usuario(username):
+    """
+    Elimina un usuario de la base de datos.
+    """
+    if not username:
+        return JsonResponse({"error": "Username no proporcionado."}, status=400)
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM usuario WHERE username=%s", [username])
+        logger.info(f"Usuario con username {username} eliminado exitosamente.")
+        return JsonResponse({"success": "Usuario eliminado"})
+    except Exception as e:
+        logger.error(f"Error al eliminar usuario: {e}")
+        return JsonResponse({"error": str(e)}, status=500)
+ 
 def gestion_alumno(request):
     context = {}
     try:
