@@ -103,6 +103,11 @@
           <div class="mt-10">
             <form class="form" method="post">
               {% csrf_token %}
+              
+              <!-- Campo oculto para el parámetro 'next' -->
+              <input type="hidden" name="next" value="{{ request.GET.next }}">
+
+              
               <label class="flex items-center mb-6 border rounded-lg px-4 py-2 bg-white shadow-md">
                 <i class="bx bx-envelope"></i>
                 <input
@@ -113,7 +118,7 @@
                   required
                 />
               </label>
-          
+            
               <label class="flex items-center mb-6 rounded-lg border px-4 py-2 bg-white shadow-md">
                 <i class="bx bx-lock-alt"></i>
                 <input
@@ -124,7 +129,7 @@
                   required
                 />
               </label>
-          
+            
               <div class="flex justify-center">
                 <button
                   class="bg-violet-600 hover:bg-violet-500 text-white font-bold py-2 px-4 border-b-4 border-violet-900 hover:border-violet-600 rounded"
@@ -134,6 +139,7 @@
                 </button>
               </div>
             </form>
+            
           </div>
           
         </div>

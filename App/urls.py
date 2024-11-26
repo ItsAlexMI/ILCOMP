@@ -10,6 +10,8 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
 
     # Gestión de documentos asociados a estudiantes
+
+    # Gestion de usuario.
     path('titulo_otorgado/<int:carnet>/', views.titulo_otorgado, name='Titulo_otorgado'),
     path('certificacion_titulo/<int:carnet>/', views.certificacion_titulo, name='Certificacion_titulo'),
     path('publicacion_gaceta/<int:carnet>/', views.publicacion_gaceta, name='Publicacion_gaceta'),
@@ -17,8 +19,16 @@ urlpatterns = [
     path('plan_estudios/<int:carnet>/', views.plan_estudios, name='Plan_estudios'),
     path('certificado_notas/<int:carnet>/', views.certificado_notas, name='Certificado_notas'),
 
-    # Gestión general
+# Gestión general
     path('gestion_usuario/', views.gestion_usuario, name='gestion_usuario'),
+    path('administrar_usuario/', views.administrar_usuario, name='administrar_usuario'),
+    path('_crear_actualizar_usuario/', views._crear_actualizar_usuario, name='_crear_actualizar_usuario'),
+    path('_obtener_usuario/', views._obtener_usuario, name='_obtener_usuario'),
+    path('_eliminar_usuario/', views._eliminar_usuario, name='_eliminar_usuario'),
+
+
+
+
     path('gestion_alumno/', views.gestion_alumno, name='gestion_alumno'),
     path('administrar_alumnos/<int:carnet>/', views.administrar_alumnos, name='administrar_alumnos'),
     path('_crear_actualizar_alumno/', views._crear_actualizar_alumno, name='_crear_actualizar_alumno'),
