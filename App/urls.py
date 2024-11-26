@@ -37,7 +37,11 @@ urlpatterns = [
     path('gestion_docente/', views.gestion_docente, name='gestion_docente'),
     path('administrar_docente/', views.administrar_docente, name='insertar_docente'),
     path('administrar_docente/<int:id>/', views.administrar_docente, name='actualizar_docente'),
+
+
     path('gestion_CP/', views.gestion_CP, name='gestion_CP'),
+
+    
     path('gestion_notas/', views.gestion_notas, name='gestion_notas'),
 
     # Operaciones de PDFs
