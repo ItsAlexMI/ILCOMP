@@ -3,104 +3,36 @@
 {% block title %}Gestión de Usuarios{% endblock %}
 
 {% block content %}
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">Gestión de Usuarios</h1>
+<h1 class="text-3xl font-bold text-gray-800 mb-6">Gestión de Usuarios</h1>
 
-    <div class="w-full flex items-center justify-center overflow-x-auto">
-        <table class="w-full text-sm text-left text-gray-500">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                <tr>
-
-                    <th scope="col" class="px-6 py-3">Nombre</th>
-                    <th scope="col" class="px-6 py-3">Username</th>
-                    <th scope="col" class="px-6 py-3">Rol</th>
-                    <th scope="col" class="px-6 py-3">Acciones</th>
-                </tr>
-            </thead>
-            {% comment %} <tbody>
-                <!-- Ejemplo de fila de usuario -->
-                <tr class="bg-white border-b hover:bg-gray-50">
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                        1
-                    </th>
-                    <td class="px-6 py-4">
-                        Luis Ángel Jirón
-                    </td>
-                    <td class="px-6 py-4">
-                        luis123
-                    </td>
-                    <td class="px-6 py-4">
-                        Estudiante
-                    </td>
-                    <td class="px-6 py-4">
-                        <a href="#" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold">Editar</a>
-                        <a href="#" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</a>
-                    </td>
-                </tr>
-    
-                <tr class="bg-white border-b hover:bg-gray-50">
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                        2
-                    </th>
-                    <td class="px-6 py-4">
-                        Pedro González
-                    </td>
-                    <td class="px-6 py-4">
-                        pedro123
-                    </td>
-                    <td class="px-6 py-4">
-                        Administrador
-                    </td>
-                    <td class="px-6 py-4">
-                        <a href="#" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold">Editar</a>
-                        <a href="#" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</a>
-                    </td>
-                </tr>
-    
-                <tr class="bg-white border-b hover:bg-gray-50">
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                        3
-                    </th>
-                    <td class="px-6 py-4">
-                        Miguel Rodríguez
-                    </td>
-                    <td class="px-6 py-4">
-                        miguel123
-                    </td>
-                    <td class="px-6 py-4">
-                        Docente
-                    </td>
-                    <td class="px-6 py-4">
-                        <a href="#" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold">Editar</a>
-                        <a href="#" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</a>
-                    </td>
-                </tr>
-    
-            </tbody> {% endcomment %}
-
-            <!-- Bucle para mostrar cada usuario -->
+<div class="w-full flex items-center justify-center overflow-x-auto">
+    <table class="w-full text-sm text-left text-gray-500">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+                <th scope="col" class="px-6 py-3">Nombre</th>
+                <th scope="col" class="px-6 py-3">Nombre de usuario</th>
+                <th scope="col" class="px-6 py-3">Rol</th>
+                <th scope="col" class="px-6 py-3">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
             {% for usuario in usuarios %}
-                <tr class="bg-white border-b hover:bg-gray-50">
-  
-                    <td class="px-6 py-4">
-                        {{ usuario.nombre }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ usuario.username }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ usuario.tipo }}
-                    </td>
-                    <td class="px-6 py-4">
-                        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold"
-                        onclick="editar('{{ usuario.username }}')">
-                        Editar
-                    </button>                        <a href="#" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</a>
-                    </td>
-                </tr>
+            <tr class="bg-white border-b hover:bg-gray-50">
+                <td class="px-6 py-4">{{ usuario.nombre }}</td>
+                <td class="px-6 py-4">{{ usuario.username }}</td>
+                <td class="px-6 py-4">{{ usuario.tipo }}</td>
+                <td class="px-6 py-4">
+                    <button onclick="editar('{{ usuario.username }}')"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold">Editar</button>
+                    <button onclick="eliminar('{{ usuario.username }}')"
+                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</button>
+                </td>
+            </tr>
             {% endfor %}
+        </tbody>
+    </table>
+</div>
 
-        </table>
-    </div>
     
 
     <div class="bg-white py-5 flex justify-between items-center">
@@ -169,7 +101,7 @@
             </div>
 
             <!-- Formulario -->
-            <form id="usuarioForm" class="relative mt-8" method="post" action="{% url 'app:administrar_usuario' %}">
+            <form id="usuarioForm" class="relative mt-8" method="post" action="{% url 'app:gestion_usuario' %}" >
                 {% csrf_token %}
                 <!-- Paso 1: Información Personal -->
                 <div id="step1" class="step transition-opacity duration-500">
@@ -327,52 +259,81 @@
     <script>
         // Función para editar un usuario
         function editar(username) {
-            let url = `/administrar_usuario/${username}`;
-            $.ajax({
-                type: "GET",
-                url: url,
-                success: function (response) {
-                    console.log(response);
+    // Llamada a la API o datos del servidor para obtener la información del usuario
+    fetch(`/administrar_usuario/${username}/`, {
+        method: "GET",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+            // Rellenar los campos del modal con la información del usuario
+            document.getElementById("username").value = data.username;
+            document.getElementById("nombre").value = data.nombre;
+            document.getElementById("tipo").value = data.tipo;
+
+            // Mostrar el modal
+            document.getElementById("modal").style.display = "block";
+        
+        
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("Ocurrió un error al obtener los datos del usuario.");
+    });
+}
+
+function guardarEdicion() {
+    const username = document.getElementById("modalUsername").value;
+    const email = document.getElementById("modalEmail").value;
+    const role = document.getElementById("modalRole").value;
+
+    // Enviar los datos editados al servidor
+    fetch(`/administrar_usuario/${username}/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
+        },
+        body: JSON.stringify({ email: email, role: role }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Usuario actualizado exitosamente.");
+            cerrarModal();
+            location.reload();
+        } else {
+            alert(data.error || "Ocurrió un error al actualizar el usuario.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("Ocurrió un error al actualizar el usuario.");
+    });
+}
     
-                    // Asignar los valores al formulario de edición
-                    $("#usuarioForm").attr('action', url); // Establecer la acción del formulario
-                    $("#nombre").val(response["nombre"]); // Rellenar el campo 'nombre'
-                    $("#tipo").val(response["tipo"]); // Rellenar el campo 'tipo'
-                    $("#username").val(response["username"]); // Rellenar el campo 'username'
-                    $("#username").attr('readonly', true); // Hacer el campo 'username' de solo lectura
-    
-                    openModal(); // Abre el modal de edición (debes definir esta función)
+function eliminar(username) {
+        if (confirm(`¿Estás seguro de eliminar al usuario ${username}?`)) {
+            fetch(`/administrar_usuario/${username}/`, {
+                method: "DELETE",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
                 },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.error(textStatus, errorThrown);
-                    alert("Error al obtener los datos del usuario: " + errorThrown);
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Usuario eliminado exitosamente.");
+                    location.reload();
+                } else {
+                    alert(data.error || "Ocurrió un error.");
                 }
             });
         }
-    
-        // Función para eliminar un usuario
-        function eliminar(username) {
-            let borrar = confirm(`¿Estás seguro de que deseas eliminar al usuario con username ${username}?`);
-    
-            if (!borrar) {
-                return; // Cancelar la acción si el usuario selecciona "No"
-            }
-    
-            let url = `/administrar_usuario/${username}`;
-            $.ajax({
-                headers: { "X-CSRFToken": '{{ csrf_token }}' }, // Token CSRF para seguridad
-                type: "DELETE",
-                url: url,
-                success: function (response) {
-                    console.log("Usuario eliminado:", response);
-                    location.reload(); // Recargar la página después de eliminar
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.error(textStatus, errorThrown);
-                    alert("Error al eliminar el usuario: " + errorThrown);
-                }
-            });
-        }
+    }
     
         function openModal() {
             const modal = document.getElementById('modal');

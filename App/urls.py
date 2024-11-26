@@ -21,7 +21,7 @@ urlpatterns = [
 
 # Gestión general
     path('gestion_usuario/', views.gestion_usuario, name='gestion_usuario'),
-    path('administrar_usuario/', views.administrar_usuario, name='administrar_usuario'),
+    path('administrar_usuario/<str:username>/', views.administrar_usuario, name='administrar_usuario'),
     path('_crear_actualizar_usuario/', views._crear_actualizar_usuario, name='_crear_actualizar_usuario'),
     path('_obtener_usuario/', views._obtener_usuario, name='_obtener_usuario'),
     path('_eliminar_usuario/', views._eliminar_usuario, name='_eliminar_usuario'),
