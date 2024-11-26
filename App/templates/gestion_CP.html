@@ -5,13 +5,21 @@
 {% block content %}
     <h2 class="text-3xl font-bold text-gray-800 mb-6">Gestión de Cursos y Planes de Estudio</h2>
 
-    <!-- Botones para alternar tablas -->
+    <!-- Botones para crear cursos y planes de estudio -->
     <div class="flex gap-4 mb-6">
         <button onclick="showTable('cursoTable')" class="mb-2 mt-10 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300 font-semibold">Cursos</button>
         <button onclick="showTable('planEstudioTable')" class="mb-2 mt-10 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300 font-semibold">Planes de Estudio</button>
-        <button onclick="showTable('planEncabezadoTable')" class="mb-2 mt-10 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300 font-semibold">Plan Encabezado</button>
     </div>
 
+    <!-- Botones para crear nuevos cursos o planes de estudio -->
+    <div id="cursoButtons" class="flex gap-4 mb-6 hidden">
+        <a href="#" onclick="openModal()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300 font-semibold">Crear Curso</a>
+    </div>
+
+    <div id="planEstudioButtons" class="flex gap-4 mb-6 hidden">
+        <a href="#" onclick="openModal(); return false;" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300 font-semibold">Crear Plan de Estudio</a>
+    </div>
+    
     <!-- Tabla de Curso -->
     <div id="cursoTable" class="overflow-x-auto mb-6 hidden">
         <table class="w-full text-sm text-left text-gray-500">
@@ -31,8 +39,6 @@
                     <td class="px-6 py-4 flex space-x-2">
                         <a href="#" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300 font-semibold">Asignar Docente</a>
                         <a href="#" class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors duration-300 font-semibold">Editar</a>
-                        <a href="#" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</a>
-                        
                     </td>
                 </tr>
                 <!-- Repite las filas según los datos en la base de datos -->
@@ -54,10 +60,9 @@
                 <tr class="bg-white border-b hover:bg-gray-50">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">1</th>
                     <td class="px-6 py-4">Ingeniería en Sistemas</td>
-                    <td class="px-6 py-4">
-                        <a href="#" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300 font-semibold">Agregar plan de estudio</a>
-                        <a href="#" class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors duration-300 font-semibold">Editar</a>
+                    <td class="px-6 py-4 flex space-x-2">
                         <a href="#" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</a>
+                        <a href="#" class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors duration-300 font-semibold">Editar</a>
                     </td>
                 </tr>
                 <!-- Repite las filas según los datos en la base de datos -->
@@ -65,41 +70,147 @@
         </table>
     </div>
 
-    <!-- Tabla de Plan_Encabezado -->
-    <div id="planEncabezadoTable" class="overflow-x-auto mb-6 hidden">
-        <table class="w-full text-sm text-left text-gray-500">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3">ID</th>
-                    <th scope="col" class="px-6 py-3">Encabezado del Plan</th>
-                    <th scope="col" class="px-6 py-3">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="bg-white border-b hover:bg-gray-50">
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">1</th>
-                    <td class="px-6 py-4">Plan Básico</td>
-                    <td class="px-6 py-4">
-                        <a href="#" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300 font-semibold">Agregar encabezado del plan</a>
-                        <a href="#" class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors duration-300 font-semibold">Editar</a>
-                        <a href="#" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 font-semibold">Eliminar</a>
-                    </td>
-                </tr>
-                <!-- Repite las filas según los datos en la base de datos -->
-            </tbody>
-        </table>
-    </div>
+    <!-- Modal -->
+    <div id="modal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="bg-white w-full max-w-md mx-auto p-8 rounded-lg shadow-lg relative">
+            <!-- Botón de cerrar modal -->
+            <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-800">&times;</button>
 
-    <!-- JavaScript para alternar tablas -->
+            <!-- Barra de Progreso con Círculos de Pasos -->
+            <div class="relative flex items-center justify-between">
+                <!-- Barra de Progreso -->
+                <div id="progressBarContainer" class="relative w-full h-2 bg-gray-300 rounded-full">
+                    <div id="progressBar" class="absolute h-2 bg-purple-500 rounded-full"></div>
+                </div>
+
+                <!-- Círculos de Pasos -->
+                <div class="absolute flex justify-between w-full -top-4 px-2">
+                    <div class="step-circle" data-step="1">1</div>
+                    <div class="step-circle" data-step="2">2</div>
+                    <div class="step-circle" data-step="3">3</div>
+                </div>
+            </div>
+
+            <!-- Formulario -->
+            <form id="usuarioForm" class="relative mt-8" method="post" action="{% url 'app:administrar_usuario' %}">
+                {% csrf_token %}
+                <!-- Paso 1: Información Personal -->
+                <div id="step1" class="step transition-opacity duration-500">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Información Personal</h2>
+                    <label class="block text-gray-700 text-sm font-semibold mb-2">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" class="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+            
+                    <button type="button" onclick="nextStep()" class="w-full mt-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300">Siguiente</button>
+                </div>
+            
+                <!-- Paso 2: Información de Usuario -->
+                <div id="step2" class="step hidden opacity-0 transition-opacity duration-500">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Información de Usuario</h2>
+                    <label class="block text-gray-700 text-sm font-semibold mb-2">Username</label>
+                    <input type="text" id="username" name="username" class="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+            
+                    <label class="block text-gray-700 text-sm font-semibold mb-2">Tipo de Usuario</label>
+                    <select id="tipo" name="tipo" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                        <option value="administrador">Administrador</option>
+                        <option value="usuario">Usuario</option>
+                    </select>
+            
+                    <div class="flex justify-between mt-6">
+                        <button type="button" onclick="prevStep()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300">Anterior</button>
+                        <button type="button" onclick="nextStep()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300">Siguiente</button>
+                    </div>
+                </div>
+            
+                <!-- Paso 3: Credenciales de Usuario -->
+                <div id="step3" class="step hidden opacity-0 transition-opacity duration-500">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Credenciales de Usuario</h2>
+                    <label class="block text-gray-700 text-sm font-semibold mb-2">Password</label>
+                    <input type="password" id="password" name="password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+            
+                    <div class="flex justify-between mt-6">
+                        <button type="button" onclick="prevStep()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300">Anterior</button>
+                        <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300">Guardar</button>
+                    </div>
+                </div>
+            </form>
+            
+    </div>
+    <!-- Modal para Crear Plan de Estudio -->
+<div id="planEstudioModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+    <div class="bg-white w-full max-w-md mx-auto p-8 rounded-lg shadow-lg relative">
+        <!-- Botón de cerrar modal -->
+        <button onclick="closePlanEstudioModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-800">&times;</button>
+
+        <!-- Barra de Progreso con Círculos de Pasos -->
+        <div class="relative flex items-center justify-between">
+            <div id="planEstudioProgressBarContainer" class="relative w-full h-2 bg-gray-300 rounded-full">
+                <div id="planEstudioProgressBar" class="absolute h-2 bg-purple-500 rounded-full"></div>
+            </div>
+            <div class="absolute flex justify-between w-full -top-4 px-2">
+                <div class="step-circle" data-step="1">1</div>
+                <div class="step-circle" data-step="2">2</div>
+                <div class="step-circle" data-step="3">3</div>
+            </div>
+        </div>
+
+        <!-- Formulario -->
+        <form id="planEstudioForm" class="relative mt-8" method="post" action="{% url 'app:administrar_usuario' %}">
+            {% csrf_token %}
+            <!-- Paso 1: Información del Plan de Estudio -->
+            <div id="planEstudioStep1" class="step transition-opacity duration-500">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Información del Plan de Estudio</h2>
+                <label class="block text-gray-700 text-sm font-semibold mb-2">Nombre del Plan de Estudio</label>
+                <input type="text" id="planNombre" name="planNombre" class="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+
+                <button type="button" onclick="nextPlanEstudioStep()" class="w-full mt-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300">Siguiente</button>
+            </div>
+
+            <!-- Paso 2: Detalles del Plan de Estudio -->
+            <div id="planEstudioStep2" class="step hidden opacity-0 transition-opacity duration-500">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Detalles del Plan de Estudio</h2>
+                <label class="block text-gray-700 text-sm font-semibold mb-2">Descripción</label>
+                <textarea id="planDescripcion" name="planDescripcion" class="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required></textarea>
+
+                <div class="flex justify-between mt-6">
+                    <button type="button" onclick="prevPlanEstudioStep()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300">Anterior</button>
+                    <button type="button" onclick="nextPlanEstudioStep()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Paso 3: Confirmación -->
+            <div id="planEstudioStep3" class="step hidden opacity-0 transition-opacity duration-500">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Confirmación</h2>
+                <p class="text-gray-700">¿Estás seguro de que quieres crear este Plan de Estudio?</p>
+
+                <div class="flex justify-between mt-6">
+                    <button type="button" onclick="prevPlanEstudioStep()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300">Anterior</button>
+                    <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+    <!-- JavaScript para alternar tablas y mostrar botones -->
     <script>
         function showTable(tableId) {
             // Oculta todas las tablas
             document.getElementById('cursoTable').classList.add('hidden');
             document.getElementById('planEstudioTable').classList.add('hidden');
-            document.getElementById('planEncabezadoTable').classList.add('hidden');
+            // Oculta todos los botones de crear
+            document.getElementById('cursoButtons').classList.add('hidden');
+            document.getElementById('planEstudioButtons').classList.add('hidden');
             
             // Muestra la tabla seleccionada
             document.getElementById(tableId).classList.remove('hidden');
+            
+            // Muestra los botones correspondientes
+            if (tableId === 'cursoTable') {
+                document.getElementById('cursoButtons').classList.remove('hidden');
+            } else if (tableId === 'planEstudioTable') {
+                document.getElementById('planEstudioButtons').classList.remove('hidden');
+            }
         }
 
         // Muestra la tabla de Cursos por defecto al cargar la página
@@ -107,5 +218,124 @@
             showTable('cursoTable');
         });
     </script>
+
+    <style>
+        /* Modal Styles */
+        #modal {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .step-circle {
+            position: relative;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            border: 3px solid gray;
+            border-radius: 50%;
+            color: gray;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .step-circle.active {
+            background-color: #8b5cf6; /* Púrpura */
+            border-color: #8b5cf6;
+            color: white;
+            width: 35px;
+            height: 35px;
+        }
+
+        .step-circle.completed {
+            background-color: #7c3aed; /* Púrpura más oscuro */
+            border-color: #7c3aed;
+            color: white;
+        }
+
+        #progressBarContainer {
+            position: relative;
+            height: 2px;
+            background-color: #e5e7eb; /* Gris claro */
+            border-radius: 2px;
+            overflow: hidden;
+            z-index: 5;
+        }
+
+        #progressBar {
+            height: 100%;
+            background-color: #8b5cf6; /* Púrpura */
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+    </style>
+    <script>
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach((el) => {
+                el.classList.add('hidden');
+                el.classList.remove('opacity-100');
+                el.classList.add('opacity-0');
+            });
+            const stepElement = document.getElementById('step' + step);
+            stepElement.classList.remove('hidden');
+            setTimeout(() => stepElement.classList.add('opacity-100'), 10);
+
+            updateProgressBar(step);
+        }
+
+        function updateProgressBar(step) {
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = `${(step / totalSteps) * 100}%`;
+
+            document.querySelectorAll('.step-circle').forEach((circle, index) => {
+                circle.classList.remove('active', 'completed');
+                if (index + 1 < step) {
+                    circle.classList.add('completed');
+                } else if (index + 1 === step) {
+                    circle.classList.add('active');
+                }
+            });
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        function openModal() {
+            document.getElementById('modal').classList.remove('hidden');
+            showStep(currentStep);
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+            currentStep = 1;
+            showStep(currentStep);
+        }
+    </script>
+
+    <script>
+        function openModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.remove('hidden'); // Mostrar el modal
+            showStep(currentStep); // Iniciar en el paso actual (si hay pasos definidos en el modal)
+        }
+    </script>
+
+
 
 {% endblock %}
