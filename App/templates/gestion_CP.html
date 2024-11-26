@@ -92,7 +92,7 @@
             </div>
 
             <!-- Formulario -->
-            <form id="usuarioForm" class="relative mt-8" method="post" action="{% url 'app:administrar_usuario' %}">
+            <form id="usuarioForm" class="relative mt-8" >
                 {% csrf_token %}
                 <!-- Paso 1: Información Personal -->
                 <div id="step1" class="step transition-opacity duration-500">
@@ -154,7 +154,7 @@
         </div>
 
         <!-- Formulario -->
-        <form id="planEstudioForm" class="relative mt-8" method="post" action="{% url 'app:administrar_usuario' %}">
+        <form id="planEstudioForm" class="relative mt-8" ">
             {% csrf_token %}
             <!-- Paso 1: Información del Plan de Estudio -->
             <div id="planEstudioStep1" class="step transition-opacity duration-500">
